@@ -228,73 +228,70 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 @media(min-width:900px){.mobile-br{display:none;}}
 
 /* ═══ CARTE DÉDICACE HERO ═══ */
-
-/* Le wrap absorbe visuellement le débordement du rotate */
 .ded-wrap{
   position:relative;
-  margin-top:36px;
-  padding:18px 6px 0;        /* espace pour que le rotate ne soit pas coupé */
+  margin-top:40px;        /* espace pour "joue-moi" qui dépasse en haut */
+  max-width:380px;        /* box plus petite */
+  margin-left:auto;
+  margin-right:auto;
 }
-@media(min-width:900px){.ded-wrap{margin-top:0;padding:18px 0 0;}}
-
-.ded-tape{
-  position:absolute;top:2px;left:50%;
-  transform:translateX(-50%) rotate(-1.5deg);
-  background:rgba(246,206,124,.88);color:var(--wine);
-  font-family:var(--ff-h);font-size:1.25rem;font-weight:700;
-  padding:4px 22px;border-radius:3px;
-  box-shadow:0 2px 8px rgba(90,26,60,.13);
-  z-index:3;white-space:nowrap;pointer-events:none;
-}
+@media(min-width:900px){.ded-wrap{margin-top:40px;}}
 
 .ded-card{
   position:relative;background:#fff;
   border:1px solid var(--line2);border-radius:var(--r2);
-  padding:22px 18px 18px;
+  padding:20px 18px 16px;
   box-shadow:0 16px 40px rgba(90,26,60,.14);
   transform:rotate(1.5deg);
   transition:transform .35s ease,box-shadow .35s;
-  display:block;        /* écrase le display:flex de .track */
+  display:block;
 }
 .ded-card.playing{
   transform:rotate(0deg);
   box-shadow:0 22px 60px rgba(239,86,56,.20);
 }
 
+/* "joue-moi" chevauche le coin haut-droit de la box */
+.ded-tape{
+  position:absolute;
+  top:-16px;
+  right:24px;
+  transform:rotate(-3deg);
+  background:rgba(246,206,124,.92);color:var(--wine);
+  font-family:var(--ff-h);font-size:1rem;font-weight:700;
+  padding:3px 14px;border-radius:3px;
+  box-shadow:0 2px 8px rgba(90,26,60,.12);
+  white-space:nowrap;pointer-events:none;
+  z-index:3;
+}
+
 /* Label occasion */
 .ded-occ{
-  font-size:.66rem;font-weight:900;letter-spacing:.1em;
+  font-size:.64rem;font-weight:900;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gold3);margin-bottom:10px;
 }
 
-/* Row 1 : texte dédicace à gauche, bouton play à droite */
+/* Row haut : texte à gauche + bouton à droite, rapprochés */
 .ded-row{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:8px;               /* réduit pour rapprocher le bouton */
-  margin-bottom:16px;
+  gap:14px;
+  margin-bottom:14px;
 }
-.ded-texts{
-  flex:1 1 0;     /* prend tout l'espace disponible */
-  min-width:0;    /* empêche le flex child de dépasser */
-  overflow:hidden;
-}
+.ded-texts{ flex:1;min-width:0; }
 .ded-to{
-  font-family:var(--ff-h);font-size:1.85rem;font-weight:700;
+  font-family:var(--ff-h);font-size:1.75rem;font-weight:700;
   color:var(--coral);line-height:1;margin-bottom:3px;
   white-space:nowrap;
 }
 .ded-from{
-  font-family:var(--ff-h);font-size:1.05rem;
+  font-family:var(--ff-h);font-size:1rem;
   color:var(--mute);line-height:1.3;
   white-space:nowrap;
 }
-
-/* Bouton play — taille fixe, ne rétrécit jamais */
 .ded-btn{
-  flex:0 0 52px;
-  width:52px;height:52px;
+  flex:0 0 50px;
+  width:50px;height:50px;
   border-radius:50%;border:none;
   background:var(--wine);color:var(--gold2);
   font-size:.9rem;
@@ -307,23 +304,21 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 .ded-btn:hover,.ded-btn:active{transform:scale(1.08);}
 .ded-card.playing .ded-btn{background:var(--coral);}
 
-/* Row 2 : player sur toute la largeur */
+/* Player : titre + barres + temps, pleine largeur */
 .ded-player{
   border-top:1px dashed var(--line2);
-  padding-top:14px;
+  padding-top:12px;
 }
 .ded-title{
   font-family:var(--ff-d);font-style:italic;font-weight:500;
-  color:var(--wine);font-size:.88rem;line-height:1.25;
-  margin-bottom:10px;
+  color:var(--wine);font-size:.86rem;line-height:1.25;
+  margin-bottom:9px;
 }
 .ded-bars-wrap{
-  position:relative;height:24px;cursor:pointer;
-  width:100%;
+  position:relative;height:24px;cursor:pointer;width:100%;
 }
 .ded-bars{
-  display:flex;align-items:flex-end;gap:2px;height:24px;
-  width:100%;
+  display:flex;align-items:flex-end;gap:2px;height:24px;width:100%;
 }
 .ded-bars span{
   flex:1;max-width:5px;
@@ -336,18 +331,22 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 .ded-card.playing .ded-bars span:nth-child(2n){animation-duration:1.45s;animation-delay:.16s;}
 .ded-card.playing .ded-bars span:nth-child(3n){animation-duration:.82s;animation-delay:.3s;}
 .ded-card.playing .ded-bars span:nth-child(5n){animation-duration:1.22s;animation-delay:.1s;}
-
 .ded-seek{position:absolute;inset:0;cursor:pointer;touch-action:none;}
+
+/* Temps à gauche sous barres */
 .ded-time{
-  text-align:right;          /* aligné à droite = fin des barres */
+  text-align:left;
   font-size:.7rem;color:var(--mute);margin-top:6px;
   font-variant-numeric:tabular-nums;
+  min-width:auto;
 }
 .ded-cap{
   text-align:center;font-size:.74rem;color:var(--mute);
   font-style:italic;margin-top:14px;
 }
 .ded-card audio{display:none!important;}
+
+
 
 /* ═══ PREUVE SOCIALE FLASH ═══ */
 .flash{background:var(--wine);padding:22px 18px;}
@@ -680,20 +679,10 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   .hero-free{ font-size:1.2rem; }
   .hero-stars{ font-size:.9rem; }
 
-  /* — Carte dédicace — */
-  .ded-wrap{ margin-top:0; padding:18px 0 0; }
-  .ded-card{
-    padding:24px 24px 20px;   /* réduit vs 36px 32px */
-    transform:rotate(.8deg);
-    overflow:visible;
-  }
+  /* — Carte dédicace — même taille que mobile — */
+  .ded-wrap{ margin-top:40px; }
+  .ded-card{ transform:rotate(1.5deg); }
   .ded-card.playing{ transform:rotate(0); }
-  .ded-occ{ font-size:.64rem; }
-  .ded-to{ font-size:1.7rem; }   /* réduit vs 2.4rem */
-  .ded-from{ font-size:1.05rem; } /* réduit vs 1.5rem */
-  .ded-btn{ flex:0 0 48px; width:48px; height:48px; font-size:.9rem; }
-  .ded-title{ font-size:.92rem; }
-  .ded-row{ gap:10px; margin-bottom:12px; }
 
   /* — Flash preuve sociale — */
   .flash{ padding:28px 48px; }
@@ -847,9 +836,11 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 
     <!-- Carte dédicace / lecteur hero -->
     <div class="ded-wrap">
-      <span class="ded-tape">♪ joue-moi ♪</span>
       <div class="ded-card track" id="heroCard">
+        <span class="ded-tape">♪ joue-moi ♪</span>
         <div class="ded-occ">Exemple — 50ᵉ anniversaire</div>
+
+        <!-- Row haut : texte dédicace + bouton play -->
         <div class="ded-row">
           <div class="ded-texts">
             <div class="ded-to">Pour toi,</div>
@@ -857,6 +848,8 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
           </div>
           <button class="ded-btn track-play" type="button" aria-label="Écouter l'exemple" onclick="tToggle(this)">▶</button>
         </div>
+
+        <!-- Player : titre + barres + temps -->
         <div class="ded-player">
           <div class="ded-title">« Cinquante bougies, ça se fête »</div>
           <div class="ded-bars-wrap track-bars-wrap">
@@ -867,6 +860,7 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
             <span class="t-cur">0:00</span>
           </div>
         </div>
+
         <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
           <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a412c135a8c83589a20.mp3" type="audio/mpeg">
         </audio>
