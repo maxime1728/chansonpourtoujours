@@ -216,9 +216,17 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 }
 .hero-stars .s{color:var(--gold);letter-spacing:1px;font-size:1rem;}
 
+/* ═══ APERÇU GRATUIT — orange ═══ */
+.apercu-orange{color:var(--coral);font-style:normal;}
+
+/* ═══ SAUT DE LIGNE MOBILE UNIQUEMENT ═══ */
+.mobile-br{display:block;}
+@media(min-width:900px){.mobile-br{display:none;}}
+
 /* ═══ CARTE DÉDICACE HERO ═══ */
 .ded-wrap{position:relative;margin-top:32px;}
 @media(min-width:900px){.ded-wrap{margin-top:0;}}
+
 .ded-tape{
   position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-2deg);
   background:rgba(246,206,124,.8);color:var(--wine);
@@ -227,24 +235,33 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   box-shadow:0 2px 8px rgba(90,26,60,.13);
   z-index:3;white-space:nowrap;pointer-events:none;
 }
+
 .ded-card{
   position:relative;background:#fff;
   border:1px solid var(--line2);border-radius:var(--r2);
-  padding:28px 24px 22px;
+  padding:22px 16px 18px;     /* padding réduit sur mobile */
   box-shadow:0 20px 54px rgba(90,26,60,.16);
   transform:rotate(.8deg);
   transition:transform .35s,box-shadow .35s;
+  overflow:hidden;            /* empêche tout débordement */
 }
 .ded-card.playing{transform:rotate(0);box-shadow:0 28px 70px rgba(239,86,56,.22);}
-.ded-occ{font-size:.7rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);margin-bottom:10px;}
-.ded-to{font-family:var(--ff-h);font-size:2rem;font-weight:700;color:var(--coral);line-height:1;margin-bottom:2px;}
-.ded-from{font-family:var(--ff-h);font-size:1.25rem;color:var(--mute);margin-bottom:18px;}
-.ded-player{display:flex;align-items:center;gap:14px;border-top:1px dashed var(--line2);padding-top:18px;}
+
+.ded-occ{font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--gold3);margin-bottom:8px;}
+.ded-to{font-family:var(--ff-h);font-size:1.7rem;font-weight:700;color:var(--coral);line-height:1;margin-bottom:2px;}
+.ded-from{font-family:var(--ff-h);font-size:1.1rem;color:var(--mute);margin-bottom:14px;}
+
+/* player : bouton + mid en colonne sur très petit écran, ligne sur 380px+ */
+.ded-player{
+  display:flex;align-items:center;gap:12px;
+  border-top:1px dashed var(--line2);padding-top:14px;
+}
+
 .ded-btn{
-  flex:0 0 58px;width:58px;height:58px;
+  flex:0 0 50px;width:50px;height:50px;  /* légèrement plus petit sur mobile */
   border-radius:50%;border:none;
   background:var(--wine);color:var(--gold2);
-  font-size:1rem;
+  font-size:.9rem;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 18px rgba(90,26,60,.28);
   transition:transform .15s,background .15s;
@@ -253,23 +270,35 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 }
 .ded-btn:hover,.ded-btn:active{transform:scale(1.07);}
 .ded-card.playing .ded-btn{background:var(--coral);}
-.ded-mid{flex:1;min-width:0;}
+
+.ded-mid{
+  flex:1;
+  min-width:0;        /* critique : empêche le débordement flex */
+  overflow:hidden;
+}
 .ded-title{
   font-family:var(--ff-d);font-style:italic;font-weight:500;
-  color:var(--wine);font-size:1rem;line-height:1.2;margin-bottom:10px;
+  color:var(--wine);font-size:.88rem;line-height:1.25;margin-bottom:8px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis; /* coupe si trop long */
 }
-.ded-bars-wrap{position:relative;height:24px;cursor:pointer;}
-.ded-bars{display:flex;align-items:flex-end;gap:3px;height:24px;}
-.ded-bars span{width:4px;border-radius:2px;background:var(--gold2);transform-origin:bottom;}
+.ded-bars-wrap{position:relative;height:22px;cursor:pointer;}
+.ded-bars{display:flex;align-items:flex-end;gap:2px;height:22px;}
+.ded-bars span{width:3px;border-radius:2px;background:var(--gold2);transform-origin:bottom;}
 .ded-bars span.lit{background:var(--coral);}
+
 @keyframes mpulse{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
 .ded-card.playing .ded-bars span{animation:mpulse 1.05s ease-in-out infinite;}
 .ded-card.playing .ded-bars span:nth-child(2n){animation-duration:1.45s;animation-delay:.16s;}
 .ded-card.playing .ded-bars span:nth-child(3n){animation-duration:.82s;animation-delay:.3s;}
 .ded-card.playing .ded-bars span:nth-child(5n){animation-duration:1.22s;animation-delay:.1s;}
+
 .ded-seek{position:absolute;inset:0;cursor:pointer;touch-action:none;}
-.ded-time{font-size:.73rem;color:var(--mute);margin-top:7px;font-variant-numeric:tabular-nums;}
-.ded-cap{text-align:center;font-size:.76rem;color:var(--mute);font-style:italic;margin-top:14px;}
+.ded-time{
+  font-size:.68rem;color:var(--mute);margin-top:6px;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.ded-cap{text-align:center;font-size:.74rem;color:var(--mute);font-style:italic;margin-top:12px;}
 .ded-card audio{display:none!important;}
 
 /* ═══ PREUVE SOCIALE FLASH ═══ */
@@ -605,11 +634,11 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 
   /* — Carte dédicace — */
   .ded-wrap{ margin-top:0; }
-  .ded-card{ padding:36px 32px 28px; }
+  .ded-card{ padding:36px 32px 28px; overflow:visible; }
   .ded-to{ font-size:2.4rem; }
   .ded-from{ font-size:1.4rem; margin-bottom:22px; }
   .ded-btn{ flex:0 0 64px; width:64px; height:64px; font-size:1.1rem; }
-  .ded-title{ font-size:1.1rem; }
+  .ded-title{ font-size:1.1rem; white-space:normal; overflow:visible; text-overflow:clip; }
 
   /* — Flash preuve sociale — */
   .flash{ padding:28px 48px; }
@@ -747,10 +776,10 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   <div class="confetti" id="confetti" aria-hidden="true"></div>
   <div class="hero-in">
     <div class="hero-copy">
-      <span class="hero-eyebrow">Chanson cadeau personnalisée · Québec</span>
-      <h1 class="hero-h1">Fais-les pleurer <em>de joie.</em></h1>
+      <span class="hero-eyebrow">Entreprise québécoise</span>
+      <h1 class="hero-h1">Fais-les pleurer<span class="mobile-br"></span> <em>de joie.</em></h1>
       <p class="hero-lede">Partage-nous leur prénom, vos souvenirs et leur style musical. On compose une chanson originale pour eux — en quelques minutes.</p>
-      <p class="hero-free"><b>Aperçu gratuit.</b> Tu paies seulement si tu l'adores.</p>
+      <p class="hero-free"><b class="apercu-orange">Aperçu gratuit.</b> Tu paies seulement si tu l'adores.</p>
       <div class="hero-ctas">
         <a class="btn" href="/creer">Créer leur chanson <span class="arr">→</span></a>
         <a class="btn btn--ghost" href="#exemples">♪ Écouter un exemple</a>
