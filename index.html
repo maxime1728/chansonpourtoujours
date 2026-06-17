@@ -248,10 +248,9 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   border:1px solid var(--line2);border-radius:var(--r2);
   padding:22px 18px 18px;
   box-shadow:0 16px 40px rgba(90,26,60,.14);
-  transform:rotate(1.5deg);          /* rotate maintenu */
+  transform:rotate(1.5deg);
   transition:transform .35s ease,box-shadow .35s;
-  /* PAS de overflow:hidden — ça coupe le box-shadow du rotate */
-  /* Le layout interne est contenu par d'autres moyens */
+  display:block;        /* écrase le display:flex de .track */
 }
 .ded-card.playing{
   transform:rotate(0deg);
@@ -829,7 +828,7 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   <div class="confetti" id="confetti" aria-hidden="true"></div>
   <div class="hero-in">
     <div class="hero-copy">
-      <span class="hero-eyebrow">Entreprise québécoise —</span>
+      <span class="hero-eyebrow">Entreprise québécoise</span>
       <h1 class="hero-h1">Fais-les pleurer<span class="mobile-br"></span> <em>de joie.</em></h1>
       <p class="hero-lede">Partage-nous leur prénom, vos souvenirs et leur style musical. On compose une chanson originale pour eux — en quelques minutes.</p>
       <p class="hero-free"><b class="apercu-orange">Aperçu gratuit.</b> Tu paies seulement si tu l'adores.</p>
