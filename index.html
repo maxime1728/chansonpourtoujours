@@ -195,6 +195,10 @@ button{font-family:var(--ff-s);cursor:pointer;}
   color:var(--gold3);margin:0 0 16px;
 }
 .hero-eyebrow::before{content:"";width:20px;height:2px;background:var(--coral);}
+.hero-eyebrow::after{content:"";width:20px;height:2px;background:var(--coral);}
+
+/* Force display:block sur la carte hero — écrase .track{display:flex} */
+#heroCard{display:block!important;}
 h1.hero-h1{
   font-family:var(--ff-d);font-weight:500;
   font-size:clamp(2.6rem,11vw,4.4rem);
@@ -268,7 +272,7 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:14px;
+  gap:8px;               /* réduit pour rapprocher le bouton */
   margin-bottom:16px;
 }
 .ded-texts{
@@ -335,8 +339,8 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
 
 .ded-seek{position:absolute;inset:0;cursor:pointer;touch-action:none;}
 .ded-time{
-  display:flex;justify-content:space-between;
-  font-size:.7rem;color:var(--mute);margin-top:8px;
+  text-align:right;          /* aligné à droite = fin des barres */
+  font-size:.7rem;color:var(--mute);margin-top:6px;
   font-variant-numeric:tabular-nums;
 }
 .ded-cap{
@@ -679,18 +683,17 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   /* — Carte dédicace — */
   .ded-wrap{ margin-top:0; padding:18px 0 0; }
   .ded-card{
-    padding:36px 32px 28px;
+    padding:24px 24px 20px;   /* réduit vs 36px 32px */
     transform:rotate(.8deg);
     overflow:visible;
   }
   .ded-card.playing{ transform:rotate(0); }
-  .ded-to{ font-size:2.4rem; }
-  .ded-from{ font-size:1.4rem; }
-  .ded-btn{ flex:0 0 64px; width:64px; height:64px; font-size:1.1rem; }
-  .ded-title{ font-size:1.1rem; }
-  .ded-to{ font-size:2.4rem; }
-  .ded-from{ font-size:1.5rem; }
-  .ded-btn{ flex:0 0 64px; width:64px; height:64px; font-size:1.1rem; }
+  .ded-occ{ font-size:.64rem; }
+  .ded-to{ font-size:1.7rem; }   /* réduit vs 2.4rem */
+  .ded-from{ font-size:1.05rem; } /* réduit vs 1.5rem */
+  .ded-btn{ flex:0 0 48px; width:48px; height:48px; font-size:.9rem; }
+  .ded-title{ font-size:.92rem; }
+  .ded-row{ gap:10px; margin-bottom:12px; }
 
   /* — Flash preuve sociale — */
   .flash{ padding:28px 48px; }
@@ -862,7 +865,6 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
           </div>
           <div class="ded-time track-time">
             <span class="t-cur">0:00</span>
-            <span class="t-dur">0:00</span>
           </div>
         </div>
         <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
