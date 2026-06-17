@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chanson Pour Toujours — Une chanson personnalisée qu'ils n'oublieront jamais</title>
+<meta name="description" content="Offre une chanson personnalisée créée à partir de leur prénom, de vos souvenirs et de leur style musical. Aperçu gratuit — tu paies seulement si tu l'adores.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://chansonpourtoujours.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chanson Pour Toujours — Une chanson qu'ils n'oublieront jamais">
+<meta property="og:description" content="Offre une chanson personnalisée créée à partir de leur prénom et de vos souvenirs. Aperçu gratuit.">
+<meta property="og:locale" content="fr_CA">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@600;700&family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ═══ RESET & TOKENS ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#FBF3E9;
+  --cream2:#F5E8D6;
+  --blush:#F2DBC8;
+  --wine:#5A1A3C;
+  --wine2:#3D0F28;
+  --plum:#7C2A55;
+  --coral:#EF5638;
+  --coral2:#FF7A5C;
+  --gold:#E6A23C;
+  --gold2:#F6CE7C;
+  --gold3:#C9882B;
+  --ink:#2B1622;
+  --mute:#7A5C6A;
+  --line:#ECD9C8;
+  --line2:#E2C8B0;
+  --night:#1E0E18;
+  --ff-d:"Fraunces",Georgia,serif;
+  --ff-h:"Caveat",cursive;
+  --ff-s:"Mulish",system-ui,sans-serif;
+  --r:16px;
+  --r2:24px;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:var(--ff-s);color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;padding-bottom:80px;}
+img{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--ff-s);cursor:pointer;}
+
+/* ═══ UTILITAIRES ═══ */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.bg-cream{background:var(--cream);}
+.bg-cream2{background:var(--cream2);}
+.bg-blush{background:var(--blush);}
+
+/* ═══ BOUTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--coral);color:#fff;
+  font-family:var(--ff-s);font-weight:900;font-size:1.05rem;
+  padding:18px 32px;border-radius:999px;border:none;
+  box-shadow:0 8px 24px rgba(239,86,56,.32);
+  transition:transform .15s,background .15s,box-shadow .15s;
+  width:100%;min-height:56px;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:hover,.btn:focus-visible{background:#d94a2a;transform:translateY(-2px);box-shadow:0 14px 30px rgba(239,86,56,.36);outline:none;}
+.btn:active{transform:translateY(0);box-shadow:0 4px 12px rgba(239,86,56,.24);}
+.btn--wine{background:var(--wine);box-shadow:0 8px 24px rgba(90,26,60,.28);}
+.btn--wine:hover,.btn--wine:focus-visible{background:var(--wine2);}
+.btn--ghost{background:transparent;color:var(--wine);box-shadow:none;border:2px solid var(--line2);}
+.btn--ghost:hover{background:var(--blush);box-shadow:none;transform:none;}
+.btn .arr{display:inline-block;transition:transform .15s;}
+.btn:hover .arr{transform:translateX(4px);}
+@media(min-width:480px){.btn{width:auto;}}
+
+/* ═══ HEADER ═══ */
+.hd{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,243,233,.95);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.hd-in{
+  max-width:1080px;margin:0 auto;
+  padding:0 18px;
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.hd-logo{
+  display:flex;align-items:center;gap:9px;
+  font-family:var(--ff-d);font-weight:500;font-size:1.12rem;
+  color:var(--wine);letter-spacing:-.01em;flex-shrink:0;
+}
+.hd-logo img{height:30px;width:auto;}
+
+/* nav desktop — cachée par défaut */
+.hd-nav{display:none;}
+
+/* burger */
+.hd-burger{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:5px;width:44px;height:44px;padding:10px;
+  background:none;border:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.hd-burger span{
+  display:block;height:2px;width:22px;
+  background:var(--wine);border-radius:2px;
+  transition:transform .25s,opacity .2s;
+}
+.hd-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hd-burger.open span:nth-child(2){opacity:0;}
+.hd-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* drawer mobile */
+.hd-drawer{
+  position:fixed;inset:60px 0 0 0;z-index:99;
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  padding:8px 0 24px;
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  border-left:1px solid var(--line);
+}
+.hd-drawer.open{transform:translateX(0);}
+.hd-drawer a{
+  padding:17px 24px;
+  font-weight:700;font-size:1.08rem;
+  color:var(--wine);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;
+}
+.hd-drawer a:active{background:var(--cream2);}
+.hd-drawer .drawer-cta{
+  margin:20px 18px 0;
+  display:block;
+  background:var(--coral);color:#fff;
+  font-weight:900;font-size:1.05rem;
+  text-align:center;padding:17px;border-radius:999px;
+  box-shadow:0 8px 22px rgba(239,86,56,.3);
+}
+
+/* desktop nav */
+@media(min-width:860px){
+  .hd-nav{
+    display:flex;gap:24px;align-items:center;
+  }
+  .hd-nav a{
+    font-size:.9rem;font-weight:700;
+    color:var(--mute);
+    transition:color .15s;
+    padding:6px 2px;
+  }
+  .hd-nav a:hover{color:var(--coral);}
+  .hd-nav .nav-cta{
+    background:var(--coral);color:#fff;
+    padding:10px 22px;border-radius:999px;
+    font-weight:900;font-size:.9rem;
+    box-shadow:0 6px 16px rgba(239,86,56,.28);
+    transition:background .15s,transform .15s;
+    margin-left:6px;
+  }
+  .hd-nav .nav-cta:hover{background:#d94a2a;transform:translateY(-1px);}
+  .hd-burger,.hd-drawer{display:none!important;}
+}
+
+/* ═══ HERO ═══ */
+.hero{
+  position:relative;overflow:hidden;
+  padding:38px 18px 48px;
+  background:var(--cream);
+}
+.hero::before{
+  content:"";position:absolute;
+  top:-30%;left:50%;transform:translateX(-50%);
+  width:min(700px,190vw);height:min(560px,140vw);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(246,206,124,.52) 0%,rgba(239,86,56,.14) 42%,transparent 70%);
+  pointer-events:none;
+}
+.hero-in{position:relative;z-index:1;max-width:1080px;margin:0 auto;}
+
+/* layout desktop */
+@media(min-width:900px){
+  .hero-in{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.72rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold3);margin:0 0 16px;
+}
+.hero-eyebrow::before{content:"";width:20px;height:2px;background:var(--coral);}
+h1.hero-h1{
+  font-family:var(--ff-d);font-weight:500;
+  font-size:clamp(2.6rem,11vw,4.4rem);
+  line-height:1.03;letter-spacing:-.02em;
+  color:var(--wine);margin:0 0 .35em;
+}
+h1.hero-h1 em{font-style:italic;color:var(--coral);}
+.hero-lede{font-size:1.05rem;color:var(--ink);max-width:30em;line-height:1.6;margin:0 0 12px;opacity:.9;}
+.hero-free{
+  font-family:var(--ff-d);font-style:italic;
+  font-size:1.1rem;color:var(--plum);margin:0 0 26px;
+}
+.hero-free b{font-style:normal;font-weight:600;color:var(--gold3);}
+.hero-ctas{display:flex;flex-direction:column;gap:12px;margin:0 0 18px;}
+@media(min-width:480px){.hero-ctas{flex-direction:row;flex-wrap:wrap;align-items:center;}}
+.hero-stars{
+  display:flex;align-items:center;gap:8px;
+  font-size:.85rem;color:var(--mute);
+}
+.hero-stars .s{color:var(--gold);letter-spacing:1px;font-size:1rem;}
+
+/* ═══ CARTE DÉDICACE HERO ═══ */
+.ded-wrap{position:relative;margin-top:32px;}
+@media(min-width:900px){.ded-wrap{margin-top:0;}}
+.ded-tape{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-2deg);
+  background:rgba(246,206,124,.8);color:var(--wine);
+  font-family:var(--ff-h);font-size:1.3rem;font-weight:700;
+  padding:4px 24px;border-radius:3px;
+  box-shadow:0 2px 8px rgba(90,26,60,.13);
+  z-index:3;white-space:nowrap;pointer-events:none;
+}
+.ded-card{
+  position:relative;background:#fff;
+  border:1px solid var(--line2);border-radius:var(--r2);
+  padding:28px 24px 22px;
+  box-shadow:0 20px 54px rgba(90,26,60,.16);
+  transform:rotate(.8deg);
+  transition:transform .35s,box-shadow .35s;
+}
+.ded-card.playing{transform:rotate(0);box-shadow:0 28px 70px rgba(239,86,56,.22);}
+.ded-occ{font-size:.7rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);margin-bottom:10px;}
+.ded-to{font-family:var(--ff-h);font-size:2rem;font-weight:700;color:var(--coral);line-height:1;margin-bottom:2px;}
+.ded-from{font-family:var(--ff-h);font-size:1.25rem;color:var(--mute);margin-bottom:18px;}
+.ded-player{display:flex;align-items:center;gap:14px;border-top:1px dashed var(--line2);padding-top:18px;}
+.ded-btn{
+  flex:0 0 58px;width:58px;height:58px;
+  border-radius:50%;border:none;
+  background:var(--wine);color:var(--gold2);
+  font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(90,26,60,.28);
+  transition:transform .15s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.ded-btn:hover,.ded-btn:active{transform:scale(1.07);}
+.ded-card.playing .ded-btn{background:var(--coral);}
+.ded-mid{flex:1;min-width:0;}
+.ded-title{
+  font-family:var(--ff-d);font-style:italic;font-weight:500;
+  color:var(--wine);font-size:1rem;line-height:1.2;margin-bottom:10px;
+}
+.ded-bars-wrap{position:relative;height:24px;cursor:pointer;}
+.ded-bars{display:flex;align-items:flex-end;gap:3px;height:24px;}
+.ded-bars span{width:4px;border-radius:2px;background:var(--gold2);transform-origin:bottom;}
+.ded-bars span.lit{background:var(--coral);}
+@keyframes mpulse{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.ded-card.playing .ded-bars span{animation:mpulse 1.05s ease-in-out infinite;}
+.ded-card.playing .ded-bars span:nth-child(2n){animation-duration:1.45s;animation-delay:.16s;}
+.ded-card.playing .ded-bars span:nth-child(3n){animation-duration:.82s;animation-delay:.3s;}
+.ded-card.playing .ded-bars span:nth-child(5n){animation-duration:1.22s;animation-delay:.1s;}
+.ded-seek{position:absolute;inset:0;cursor:pointer;touch-action:none;}
+.ded-time{font-size:.73rem;color:var(--mute);margin-top:7px;font-variant-numeric:tabular-nums;}
+.ded-cap{text-align:center;font-size:.76rem;color:var(--mute);font-style:italic;margin-top:14px;}
+.ded-card audio{display:none!important;}
+
+/* ═══ PREUVE SOCIALE FLASH ═══ */
+.flash{background:var(--wine);padding:22px 18px;}
+.flash-in{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+@media(min-width:720px){.flash-in{flex-direction:row;gap:0;justify-content:space-around;align-items:center;}}
+.flash-q{
+  display:flex;align-items:flex-start;gap:12px;
+  color:#fff;font-size:.92rem;line-height:1.45;
+}
+.flash-q::before{
+  content:"\201C";
+  font-family:var(--ff-d);font-size:3rem;
+  color:var(--gold2);line-height:.7;
+  flex-shrink:0;margin-top:4px;
+}
+.flash-q span{font-style:italic;font-family:var(--ff-d);}
+.flash-sep{display:none;}
+@media(min-width:720px){
+  .flash-sep{display:block;width:1px;height:50px;background:rgba(255,255,255,.15);}
+  .flash-q{max-width:30%;}
+}
+
+/* ═══ MARQUEE ═══ */
+.marq{background:linear-gradient(90deg,var(--wine2),var(--plum));overflow:hidden;padding:14px 0;}
+.marq-track{display:flex;width:max-content;animation:mq 36s linear infinite;}
+.marq-track span{
+  display:inline-flex;align-items:center;
+  font-family:var(--ff-d);font-style:italic;font-size:1.12rem;
+  color:var(--gold2);padding:0 20px;white-space:nowrap;
+}
+.marq-track span::after{content:"♪";color:var(--coral2);margin-left:20px;font-style:normal;font-size:.85rem;}
+@keyframes mq{to{transform:translateX(-50%);}}
+
+/* ═══ SECTIONS GÉNÉRIQUES ═══ */
+.sec{padding:52px 18px;}
+.sec-in{max-width:680px;margin:0 auto;}
+.sec-in--wide{max-width:1060px;margin:0 auto;}
+
+.head{margin:0 0 32px;}
+.head .kick{
+  display:inline-flex;align-items:center;gap:8px;
+  text-transform:uppercase;letter-spacing:.16em;
+  font-size:.68rem;font-weight:900;color:var(--coral);margin:0 0 12px;
+}
+.head .kick::before{content:"";width:20px;height:2px;background:var(--coral);}
+.head h2{
+  font-family:var(--ff-d);font-weight:500;
+  font-size:clamp(1.75rem,7vw,2.6rem);
+  color:var(--wine);line-height:1.1;letter-spacing:-.015em;
+}
+.head h2 em{font-style:italic;color:var(--coral);}
+.head--c{text-align:center;max-width:600px;margin-left:auto;margin-right:auto;}
+.head--c .kick::before{display:none;}
+
+/* ═══ COMMENT ÇA MARCHE ═══ */
+.steps{display:grid;gap:14px;}
+@media(min-width:700px){.steps{grid-template-columns:repeat(3,1fr);}}
+.step{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r2);
+  padding:26px 22px;
+}
+.step-n{font-family:var(--ff-h);font-size:2.8rem;font-weight:700;color:var(--coral);line-height:.8;margin-bottom:14px;}
+.step h3{font-family:var(--ff-d);font-weight:500;font-size:1.25rem;color:var(--wine);margin:0 0 8px;line-height:1.2;}
+.step p{font-size:.94rem;color:var(--mute);line-height:1.6;}
+
+/* ═══ LECTEURS TRACKLIST ═══ */
+.tracklist{display:flex;flex-direction:column;gap:11px;}
+.track{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);
+  padding:15px 16px;display:flex;align-items:center;gap:14px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.track.playing{border-color:var(--coral);box-shadow:0 6px 22px rgba(239,86,56,.15);}
+.track-play{
+  flex:0 0 50px;width:50px;height:50px;
+  border-radius:50%;border:none;
+  background:var(--wine);color:var(--gold2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.88rem;
+  transition:background .15s,transform .12s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.track-play:hover,.track-play:active{background:var(--plum);transform:scale(1.06);}
+.track.playing .track-play{background:var(--coral);}
+.track-body{flex:1;min-width:0;}
+.track-name{font-family:var(--ff-d);font-style:italic;font-weight:500;color:var(--wine);font-size:1.02rem;line-height:1.25;margin-bottom:2px;}
+.track-sub{font-size:.72rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--gold3);margin-bottom:9px;}
+.track-bars-wrap{position:relative;height:22px;cursor:pointer;}
+.track-bars{display:flex;align-items:flex-end;gap:3px;height:22px;}
+.track-bars span{width:4px;border-radius:2px;background:var(--gold2);transform-origin:bottom;}
+.track-bars span.lit{background:var(--coral);}
+.track.playing .track-bars span{animation:mpulse 1.1s ease-in-out infinite;}
+.track.playing .track-bars span:nth-child(2n){animation-duration:1.45s;animation-delay:.18s;}
+.track.playing .track-bars span:nth-child(3n){animation-duration:.85s;animation-delay:.32s;}
+.track-seek{position:absolute;inset:0;cursor:pointer;touch-action:none;}
+.track-time{flex:0 0 auto;font-size:.72rem;color:var(--mute);font-variant-numeric:tabular-nums;text-align:right;min-width:68px;}
+.track audio{display:none!important;}
+.tl-cta{text-align:center;margin-top:26px;}
+
+/* ═══ OCCASIONS ═══ */
+.occ{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+@media(min-width:860px){.occ{grid-template-columns:repeat(3,1fr);}}
+.occ-card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r2);
+  padding:22px 18px;
+  transition:transform .15s,box-shadow .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.occ-card:hover,.occ-card:active{transform:translateY(-3px);box-shadow:0 12px 28px rgba(90,26,60,.10);border-color:var(--gold2);}
+.occ-emoji{font-size:1.6rem;line-height:1;margin-bottom:10px;display:block;}
+.occ-card h3{font-family:var(--ff-d);font-style:italic;font-weight:500;color:var(--wine);font-size:1.15rem;margin:0 0 5px;line-height:1.2;}
+.occ-card p{color:var(--mute);font-size:.88rem;line-height:1.5;}
+
+/* ═══ CE QUE TU REÇOIS ═══ */
+.offer{
+  max-width:480px;margin:0 auto;background:#fff;
+  border:2px solid var(--gold2);border-radius:var(--r2);
+  padding:32px 24px;
+  box-shadow:0 16px 44px rgba(90,26,60,.12);
+  position:relative;
+}
+.offer-badge{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:var(--coral);color:#fff;
+  font-size:.68rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 18px;border-radius:999px;white-space:nowrap;
+  box-shadow:0 6px 16px rgba(239,86,56,.3);
+}
+.offer h2{font-family:var(--ff-d);font-weight:500;font-size:1.65rem;color:var(--wine);text-align:center;margin:10px 0 22px;}
+.offer ul{list-style:none;margin:0 0 24px;}
+.offer li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 0;border-bottom:1px solid var(--line);
+  color:var(--ink);font-size:.96rem;line-height:1.5;
+}
+.offer li:last-child{border-bottom:0;}
+.ck{
+  flex:0 0 22px;width:22px;height:22px;
+  background:var(--coral);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:900;margin-top:1px;
+}
+.offer-cta{text-align:center;}
+.offer-sub{
+  display:flex;flex-wrap:wrap;gap:8px 14px;
+  justify-content:center;margin-top:16px;
+  font-size:.76rem;color:var(--mute);
+}
+
+/* ═══ TÉMOIGNAGES ═══ */
+.t-feat{
+  background:var(--wine);color:#fff;
+  border-radius:var(--r2);padding:34px 28px;
+  margin:0 0 16px;position:relative;overflow:hidden;
+}
+.t-feat::before{
+  content:"\201C";position:absolute;top:-6px;left:18px;
+  font-family:var(--ff-d);font-size:7rem;
+  color:rgba(246,206,124,.28);line-height:1;pointer-events:none;
+}
+.t-feat .stars{color:var(--gold2);letter-spacing:3px;font-size:.95rem;margin:0 0 12px;position:relative;}
+.t-feat blockquote{font-family:var(--ff-d);font-size:1.28rem;font-style:italic;line-height:1.45;margin:0 0 18px;position:relative;}
+.t-feat .attr{font-size:.88rem;font-weight:800;position:relative;}
+.t-feat .attr span{display:block;font-weight:500;font-style:italic;color:var(--gold2);margin-top:3px;}
+.t-grid{display:grid;gap:12px;}
+@media(min-width:640px){.t-grid{grid-template-columns:1fr 1fr;}}
+.t-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px 20px;}
+.t-card .stars{color:var(--gold);letter-spacing:2px;font-size:.84rem;margin:0 0 10px;}
+.t-card blockquote{font-family:var(--ff-d);font-style:italic;font-size:1rem;color:var(--ink);line-height:1.5;margin:0 0 12px;}
+.t-card .attr{font-size:.78rem;font-weight:800;color:var(--wine);}
+.t-card .attr span{display:block;font-weight:500;font-style:italic;color:var(--mute);margin-top:2px;}
+.t-cta{text-align:center;margin-top:28px;}
+
+/* ═══ FAQ ═══ */
+.faq-item{border-bottom:1px solid var(--line2);}
+.faq-item:first-child{border-top:1px solid var(--line2);}
+.faq-q{
+  width:100%;background:none;border:none;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:14px;padding:18px 2px;text-align:left;
+  min-height:56px;
+  -webkit-tap-highlight-color:transparent;
+}
+.faq-qt{font-family:var(--ff-d);font-weight:500;color:var(--wine);font-size:1.06rem;line-height:1.3;flex:1;}
+.faq-ic{
+  flex:0 0 26px;width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--gold2);color:var(--gold3);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:transform .25s,background .2s,color .2s;
+}
+.faq-item.open .faq-ic{transform:rotate(45deg);background:var(--coral);color:#fff;border-color:var(--coral);}
+.faq-a{
+  max-height:0;overflow:hidden;padding:0 2px;
+  color:var(--mute);font-size:.94rem;line-height:1.65;
+  transition:max-height .3s ease,padding .3s ease;
+}
+.faq-item.open .faq-a{max-height:400px;padding:0 2px 18px;}
+.faq-a .prix{
+  display:inline-block;margin-top:8px;
+  background:var(--cream2);border:1px solid var(--gold2);
+  border-radius:10px;padding:10px 16px;
+  font-weight:700;color:var(--wine);font-size:1rem;
+}
+
+/* ═══ CTA FINAL ═══ */
+.final{
+  position:relative;overflow:hidden;
+  text-align:center;padding:68px 18px;
+  background:linear-gradient(160deg,var(--wine) 0%,var(--wine2) 100%);
+  color:#fff;
+}
+.final::before{
+  content:"";position:absolute;
+  top:-40%;left:50%;transform:translateX(-50%);
+  width:min(600px,160vw);height:min(500px,130vw);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(239,86,56,.38) 0%,transparent 68%);
+  pointer-events:none;
+}
+.final-in{position:relative;z-index:1;max-width:560px;margin:0 auto;}
+.final .hand{
+  font-family:var(--ff-h);font-size:1.7rem;color:var(--gold2);
+  display:block;margin-bottom:8px;
+}
+.final h2{
+  font-family:var(--ff-d);font-weight:500;font-style:italic;
+  font-size:clamp(1.9rem,7vw,2.7rem);line-height:1.15;margin:0 0 12px;
+}
+.final p{color:rgba(255,255,255,.78);font-size:1rem;margin:0 0 28px;line-height:1.6;}
+
+/* ═══ FOOTER ═══ */
+.ft{background:var(--night);text-align:center;padding:44px 20px 32px;}
+.ft-name{font-family:var(--ff-d);font-style:italic;font-size:1.4rem;color:var(--gold2);margin:0 0 8px;}
+.ft-tag{font-family:var(--ff-d);font-style:italic;font-size:.9rem;color:rgba(255,255,255,.5);margin:0 0 16px;}
+.ft-email{font-size:.84rem;color:rgba(255,255,255,.5);margin:0 0 18px;}
+.ft-email a{color:var(--gold2);font-weight:700;}
+.ft nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;margin:0 0 18px;}
+.ft nav a{font-size:.78rem;color:rgba(255,255,255,.48);font-weight:600;transition:color .15s;}
+.ft nav a:hover{color:var(--gold2);}
+.ft-copy{font-size:.74rem;color:rgba(255,255,255,.28);}
+.ft-prefs{margin-top:10px;}
+.ft-prefs button{background:none;border:none;font-size:.74rem;color:rgba(255,255,255,.4);font-family:var(--ff-s);text-decoration:underline;padding:0;cursor:pointer;}
+
+/* ═══ STICKY BAR ═══ */
+.sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:90;
+  display:flex;justify-content:center;align-items:center;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+  background:rgba(251,243,233,.97);
+  border-top:1px solid var(--line);
+  box-shadow:0 -4px 18px rgba(90,26,60,.08);
+  transform:translateY(120%);opacity:0;visibility:hidden;pointer-events:none;
+}
+.sticky.ready{transition:transform .28s ease,opacity .28s ease,visibility .28s;}
+.sticky.show{transform:none;opacity:1;visibility:visible;pointer-events:auto;}
+.sticky a{
+  display:flex;width:100%;max-width:440px;
+  align-items:center;justify-content:center;gap:8px;
+  background:var(--coral);color:#fff;
+  font-weight:900;font-size:1rem;
+  padding:15px 26px;border-radius:999px;
+  box-shadow:0 4px 16px rgba(239,86,56,.32);
+  -webkit-tap-highlight-color:transparent;
+}
+.sticky.ready a{transition:background .15s,transform .15s;}
+.sticky a:active{background:#d94a2a;transform:scale(.99);}
+
+/* ═══ CONSENTEMENT ═══ */
+.consent{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:95;
+  max-width:600px;margin:0 auto;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:0 12px 32px rgba(90,26,60,.18);
+  padding:16px 18px;display:none;
+}
+.consent.show{display:block;}
+.consent.docked{bottom:80px;}
+.consent-txt{font-size:.82rem;line-height:1.5;color:var(--ink);margin:0 0 12px;}
+.consent-txt a{color:var(--coral);font-weight:700;}
+.consent-row{display:flex;gap:9px;}
+.cbtn{
+  flex:1;font-family:var(--ff-s);font-weight:800;
+  font-size:.9rem;padding:12px 16px;border-radius:12px;
+  border:1.5px solid var(--wine);
+  transition:background .15s,color .15s;
+  -webkit-tap-highlight-color:transparent;
+  min-height:44px;
+}
+.cbtn-yes{background:var(--wine);color:#fff;}
+.cbtn-yes:hover{background:var(--wine2);}
+.cbtn-no{background:transparent;color:var(--wine);}
+.cbtn-no:hover{background:var(--blush);}
+@media(min-width:480px){.consent-row{justify-content:flex-end;}.cbtn{flex:0 0 auto;min-width:130px;}}
+
+/* ═══ CONFETTIS ═══ */
+.confetti{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.confetti i{position:absolute;display:block;width:9px;height:9px;border-radius:2px;opacity:0;animation:cfloat 8s ease-in-out infinite;}
+@keyframes cfloat{0%{opacity:0;transform:translateY(6px) rotate(0)}15%{opacity:.65}50%{transform:translateY(-12px) rotate(130deg)}85%{opacity:.65}100%{opacity:0;transform:translateY(6px) rotate(260deg)}}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}.marq-track{animation:none;}}
+
+/* ═══════════════════════════════════
+   DESKTOP — 1024px+
+   Tout ce qui suit ne s'applique qu'à
+   des écrans larges. Mobile inchangé.
+═══════════════════════════════════ */
+@media(min-width:1024px){
+
+  /* — Sections — */
+  .sec{ padding:80px 48px; }
+  .sec-in{ max-width:860px; }
+  .sec-in--wide{ max-width:1180px; }
+
+  /* — Titres — */
+  .head h2{ font-size:2.6rem; }
+  .head{ margin-bottom:44px; }
+
+  /* — Hero — */
+  .hero{ padding:80px 48px 96px; }
+  .hero-in{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:72px;
+    align-items:center;
+    max-width:1180px;
+  }
+  h1.hero-h1{ font-size:4.8rem; }
+  .hero-lede{ font-size:1.15rem; max-width:28em; }
+  .hero-free{ font-size:1.2rem; }
+  .hero-stars{ font-size:.9rem; }
+
+  /* — Carte dédicace — */
+  .ded-wrap{ margin-top:0; }
+  .ded-card{ padding:36px 32px 28px; }
+  .ded-to{ font-size:2.4rem; }
+  .ded-from{ font-size:1.4rem; margin-bottom:22px; }
+  .ded-btn{ flex:0 0 64px; width:64px; height:64px; font-size:1.1rem; }
+  .ded-title{ font-size:1.1rem; }
+
+  /* — Flash preuve sociale — */
+  .flash{ padding:28px 48px; }
+  .flash-in{ gap:0; }
+  .flash-sep{ display:block; }
+  .flash-q{ font-size:1rem; max-width:28%; }
+
+  /* — Étapes — */
+  .steps{ grid-template-columns:repeat(3,1fr); gap:22px; }
+  .step{ padding:34px 28px; }
+  .step-n{ font-size:3.2rem; margin-bottom:16px; }
+  .step h3{ font-size:1.35rem; }
+  .step p{ font-size:1rem; }
+
+  /* — Tracklist : 2 colonnes sur desktop — */
+  .tracklist{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .track{ padding:18px 20px; }
+  .track-play{ flex:0 0 54px; width:54px; height:54px; }
+  .track-name{ font-size:1.08rem; }
+
+  /* — Occasions — */
+  .occ{ grid-template-columns:repeat(3,1fr); gap:18px; }
+  .occ-card{ padding:28px 24px; }
+  .occ-emoji{ font-size:1.9rem; margin-bottom:12px; }
+  .occ-card h3{ font-size:1.25rem; }
+  .occ-card p{ font-size:.94rem; }
+
+  /* — Ce que tu reçois : côte à côte avec une colonne de valeur — */
+  .offer-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:center;
+    max-width:960px;
+    margin:0 auto;
+  }
+  .offer{
+    max-width:100%;
+    margin:0;
+  }
+  .offer-context{
+    display:block;  /* caché sur mobile, visible ici */
+  }
+  .offer h2{ font-size:1.9rem; }
+  .offer li{ font-size:1rem; padding:14px 0; }
+
+  /* — Témoignages — */
+  .t-feat{ padding:44px 44px; }
+  .t-feat blockquote{ font-size:1.5rem; }
+  .t-grid{ grid-template-columns:repeat(3,1fr); gap:16px; }
+  .t-card{ padding:26px 24px; }
+  .t-card blockquote{ font-size:1.05rem; }
+
+  /* — FAQ : 2 colonnes — */
+  .faq-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 60px;
+  }
+  /* les items impairs prennent le séparateur de droite */
+  .faq-item{ border-bottom:1px solid var(--line2); }
+  .faq-item:first-child{ border-top:1px solid var(--line2); }
+  /* dans une grille 2col, le 3e item doit aussi avoir border-top */
+  .faq-item:nth-child(3){ border-top:1px solid var(--line2); }
+  .faq-qt{ font-size:1.1rem; }
+
+  /* — CTA Final — */
+  .final{ padding:96px 48px; }
+  .final h2{ font-size:3rem; }
+  .final p{ font-size:1.1rem; }
+  .final .hand{ font-size:2rem; }
+  .final-in{ max-width:620px; }
+
+  /* — Header — */
+  .hd-in{ height:68px; padding:0 48px; max-width:1280px; }
+  .hd-logo{ font-size:1.25rem; }
+}
+
+/* Contexte valeur (caché sur mobile, visible sur desktop) */
+.offer-context{
+  display:none;
+}
+.offer-context h3{
+  font-family:var(--ff-d);font-weight:500;font-style:italic;
+  font-size:2rem;color:var(--wine);line-height:1.15;margin-bottom:16px;
+}
+.offer-context p{
+  font-size:1rem;color:var(--mute);line-height:1.65;margin-bottom:20px;
+}
+.offer-context .quote{
+  font-family:var(--ff-d);font-style:italic;
+  font-size:1.12rem;color:var(--plum);
+  border-left:3px solid var(--coral);
+  padding-left:18px;line-height:1.5;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hd">
+  <div class="hd-in">
+    <a class="hd-logo" href="/" aria-label="Chanson Pour Toujours">
+      <span>Chanson Pour Toujours</span>
+    </a>
+    <nav class="hd-nav" aria-label="Navigation principale">
+      <a href="#comment">Comment</a>
+      <a href="#exemples">Exemples</a>
+      <a href="#temoignages">Témoignages</a>
+      <a href="#faq">FAQ</a>
+      <a class="nav-cta" href="/creer">Créer leur chanson →</a>
+    </nav>
+    <button class="hd-burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══ DRAWER MOBILE ═══ -->
+<nav class="hd-drawer" id="drawer" aria-label="Menu mobile">
+  <a href="#comment" onclick="closeDrawer()">♩ Comment ça marche</a>
+  <a href="#exemples" onclick="closeDrawer()">♪ Écoute des exemples</a>
+  <a href="#occasions" onclick="closeDrawer()">✦ Occasions</a>
+  <a href="#temoignages" onclick="closeDrawer()">❤ Témoignages</a>
+  <a href="#faq" onclick="closeDrawer()">? Questions fréquentes</a>
+  <a href="/creer" class="drawer-cta" onclick="closeDrawer()">Créer leur chanson →</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div class="hero-in">
+    <div class="hero-copy">
+      <span class="hero-eyebrow">Chanson cadeau personnalisée · Québec</span>
+      <h1 class="hero-h1">Fais-les pleurer <em>de joie.</em></h1>
+      <p class="hero-lede">Partage-nous leur prénom, vos souvenirs et leur style musical. On compose une chanson originale pour eux — en quelques minutes.</p>
+      <p class="hero-free"><b>Aperçu gratuit.</b> Tu paies seulement si tu l'adores.</p>
+      <div class="hero-ctas">
+        <a class="btn" href="/creer">Créer leur chanson <span class="arr">→</span></a>
+        <a class="btn btn--ghost" href="#exemples">♪ Écouter un exemple</a>
+      </div>
+      <div class="hero-stars">
+        <span class="s">★★★★★</span>
+        Des centaines de familles québécoises l'ont offerte
+      </div>
+    </div>
+
+    <!-- Carte dédicace / lecteur hero -->
+    <div class="ded-wrap">
+      <span class="ded-tape">♪ joue-moi ♪</span>
+      <div class="ded-card track" id="heroCard">
+        <div class="ded-occ">Exemple — 50ᵉ anniversaire</div>
+        <div class="ded-to">Pour toi,</div>
+        <div class="ded-from">avec tout notre amour ✶</div>
+        <div class="ded-player">
+          <button class="ded-btn track-play" type="button" aria-label="Écouter l'exemple" onclick="tToggle(this)">▶</button>
+          <div class="ded-mid">
+            <div class="ded-title">« Cinquante bougies, ça se fête »</div>
+            <div class="ded-bars-wrap track-bars-wrap">
+              <div class="ded-bars track-bars"></div>
+              <div class="ded-seek track-seek" ontouchstart="tSeekTouch(this,event)" onclick="tSeek(this,event)"></div>
+            </div>
+            <div class="ded-time track-time"><span class="t-cur">0:00</span> / <span class="t-dur">0:00</span></div>
+          </div>
+        </div>
+        <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
+          <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a412c135a8c83589a20.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <p class="ded-cap">Une vraie chanson créée pour un de nos clients.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PREUVE SOCIALE FLASH ═══ -->
+<div class="flash" role="region" aria-label="Témoignages rapides">
+  <div class="flash-in">
+    <div class="flash-q"><span>La musique a prononcé son nom et elle s'est illuminée instantanément. — Laura H., Québec</span></div>
+    <div class="flash-sep" aria-hidden="true"></div>
+    <div class="flash-q"><span>Elle a pleuré. Les paroles reflétaient parfaitement notre parcours. — Anthony O., Laval</span></div>
+    <div class="flash-sep" aria-hidden="true"></div>
+    <div class="flash-q"><span>Ma mère l'a écoutée vingt fois le premier jour. — Vanessa L., Brossard</span></div>
+  </div>
+</div>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marq" aria-hidden="true">
+  <div class="marq-track" id="marqTrack">
+    <span>Anniversaire</span><span>Saint-Valentin</span><span>Mariage</span><span>Fête des Mères</span><span>Nouveau bébé</span><span>Fête des Pères</span><span>Demande en mariage</span><span>Noël</span><span>Retraite</span><span>Remise de diplôme</span><span>Juste parce que</span><span>Anniv. de mariage</span>
+  </div>
+</div>
+
+<!-- ═══ COMMENT ÇA MARCHE ═══ -->
+<section class="sec bg-cream" id="comment">
+  <div class="sec-in--wide">
+    <div class="head head--c">
+      <span class="kick">Comment ça marche</span>
+      <h2>Simple comme <em>envoyer un message</em></h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Raconte-nous qui ils sont</h3>
+        <p>Leur prénom, ce que tu aimes d'eux, un souvenir. Quelques phrases suffisent — pas besoin d'être écrivain.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>On compose leur chanson</h3>
+        <p>Paroles et mélodie créées sur mesure à partir de ton histoire, dans le style musical qui leur ressemble.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Écoute, puis offre</h3>
+        <p>Tu reçois un aperçu en quelques minutes sur une page dédiée. Tu écoutes avant de décider.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <a class="btn" href="/creer" style="display:inline-flex;">Créer leur chanson <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXEMPLES ═══ -->
+<section class="sec bg-cream2" id="exemples">
+  <div class="sec-in">
+    <div class="head">
+      <span class="kick">Écoute de vrais exemples</span>
+      <h2>Des chansons créées <em>pour nos clients</em></h2>
+    </div>
+    <div class="tracklist">
+
+      <div class="track">
+        <button class="track-play" type="button" aria-label="Écouter : Pour ma femme — Roxanne" onclick="tToggle(this)">▶</button>
+        <div class="track-body">
+          <p class="track-name">Pour ma femme — Roxanne</p>
+          <span class="track-sub">Country émotionnelle</span>
+          <div class="track-bars-wrap"><div class="track-bars"></div><div class="track-seek" ontouchstart="tSeekTouch(this,event)" onclick="tSeek(this,event)"></div></div>
+        </div>
+        <div class="track-time"><span class="t-cur">0:00</span> / <span class="t-dur">0:00</span></div>
+        <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
+          <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a5838381eafa8938759.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+      <div class="track">
+        <button class="track-play" type="button" aria-label="Écouter : Jonathan mon champion" onclick="tToggle(this)">▶</button>
+        <div class="track-body">
+          <p class="track-name">Pour mon fils — Jonathan mon champion</p>
+          <span class="track-sub">Rock énergique</span>
+          <div class="track-bars-wrap"><div class="track-bars"></div><div class="track-seek" ontouchstart="tSeekTouch(this,event)" onclick="tSeek(this,event)"></div></div>
+        </div>
+        <div class="track-time"><span class="t-cur">0:00</span> / <span class="t-dur">0:00</span></div>
+        <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
+          <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a5838381eafa893874e.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+      <div class="track">
+        <button class="track-play" type="button" aria-label="Écouter : Merci maman chérie" onclick="tToggle(this)">▶</button>
+        <div class="track-body">
+          <p class="track-name">Pour ma mère — Merci maman chérie</p>
+          <span class="track-sub">Pop joyeux et entraînant</span>
+          <div class="track-bars-wrap"><div class="track-bars"></div><div class="track-seek" ontouchstart="tSeekTouch(this,event)" onclick="tSeek(this,event)"></div></div>
+        </div>
+        <div class="track-time"><span class="t-cur">0:00</span> / <span class="t-dur">0:00</span></div>
+        <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
+          <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a588696a78b8d23bcee.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+      <div class="track">
+        <button class="track-play" type="button" aria-label="Écouter : Emma" onclick="tToggle(this)">▶</button>
+        <div class="track-body">
+          <p class="track-name">Pour ma partenaire — Emma</p>
+          <span class="track-sub">Pop émotionnelle</span>
+          <div class="track-bars-wrap"><div class="track-bars"></div><div class="track-seek" ontouchstart="tSeekTouch(this,event)" onclick="tSeek(this,event)"></div></div>
+        </div>
+        <div class="track-time"><span class="t-cur">0:00</span> / <span class="t-dur">0:00</span></div>
+        <audio preload="metadata" onloadedmetadata="tDur(this)" ontimeupdate="tTick(this)" onplay="tPlay(this)" onpause="tPause(this)" onended="tEnd(this)">
+          <source src="https://assets.cdn.filesafe.space/2aEvL7jAfKfV4D45pRD5/media/69e50a5850b9a3263a17f1e9.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+    </div>
+    <div class="tl-cta">
+      <a class="btn" href="/creer">Je veux leur chanson <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OCCASIONS ═══ -->
+<section class="sec bg-cream" id="occasions">
+  <div class="sec-in--wide">
+    <div class="head head--c">
+      <span class="kick">Pour toutes les occasions</span>
+      <h2>Chaque histoire mérite <em>sa chanson</em></h2>
+    </div>
+    <div class="occ">
+      <a class="occ-card" href="/creer"><span class="occ-emoji">❤️</span><h3>Pour ton amoureux·se</h3><p>Ce que les mots n'arrivent pas à dire.</p></a>
+      <a class="occ-card" href="/creer"><span class="occ-emoji">🎂</span><h3>Pour un anniversaire</h3><p>Le cadeau dont ils parleront pendant des années.</p></a>
+      <a class="occ-card" href="/creer"><span class="occ-emoji">🌷</span><h3>Pour tes parents</h3><p>Remercie-les pour tout — en chanson.</p></a>
+      <a class="occ-card" href="/creer"><span class="occ-emoji">💍</span><h3>Pour un mariage</h3><p>Une première danse vraiment unique.</p></a>
+      <a class="occ-card" href="/creer"><span class="occ-emoji">🍼</span><h3>Pour un nouveau bébé</h3><p>Une berceuse à son nom pour l'accueillir.</p></a>
+      <a class="occ-card" href="/creer"><span class="occ-emoji">✨</span><h3>Juste parce que</h3><p>Pas besoin d'occasion pour faire briller quelqu'un.</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CE QUE TU REÇOIS ═══ -->
+<section class="sec bg-cream2">
+  <div class="sec-in--wide">
+    <div class="offer-wrap">
+
+      <!-- Colonne gauche : contexte valeur (desktop seulement) -->
+      <div class="offer-context">
+        <h3>Un cadeau qu'on n'oublie jamais d'avoir reçu.</h3>
+        <p>Une chanson porte quelque chose qu'aucun objet ne peut transmettre : le sentiment d'être vraiment vu, vraiment connu. Leur prénom dans les paroles. Vos souvenirs dans la mélodie.</p>
+        <p class="quote">« J'aurais payé le triple. Son expression quand elle a compris ce que c'était… incroyable. »<br><strong>— Serge P., Saint-Sauveur</strong></p>
+      </div>
+
+      <!-- Colonne droite : la carte inclus -->
+      <div class="offer">
+        <span class="offer-badge">Ce que tu reçois</span>
+        <h2>Tout pour un cadeau inoubliable</h2>
+        <ul>
+          <li><span class="ck">✓</span><span>Une chanson originale composée juste pour eux</span></li>
+          <li><span class="ck">✓</span><span>Leur prénom et vos souvenirs dans les paroles</span></li>
+          <li><span class="ck">✓</span><span>Fichier MP3 à télécharger et garder pour toujours</span></li>
+          <li><span class="ck">✓</span><span>Une page privée à partager avec la famille</span></li>
+          <li><span class="ck">✓</span><span>Qualité studio professionnelle</span></li>
+          <li><span class="ck">✓</span><span>Révisions jusqu'à satisfaction — sans frais</span></li>
+        </ul>
+        <div class="offer-cta">
+          <a class="btn" href="/creer">Créer leur chanson <span class="arr">→</span></a>
+        </div>
+        <div class="offer-sub">
+          <span>♥ Aperçu gratuit</span><span>✦ Tu paies seulement si tu l'adores</span><span>⏱ Quelques minutes</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TÉMOIGNAGES ═══ -->
+<section class="sec bg-blush" id="temoignages">
+  <div class="sec-in--wide">
+    <div class="head head--c">
+      <span class="kick">De vraies familles d'ici</span>
+      <h2>Le genre de moment <em>qu'on n'oublie pas</em></h2>
+    </div>
+    <div class="t-feat">
+      <p class="stars">★★★★★</p>
+      <blockquote>La musique a prononcé son nom et elle s'est illuminée instantanément. Le plus beau cadeau que j'aie jamais offert.</blockquote>
+      <p class="attr">Laura Hébert, Québec<span>Cadeau pour sa fille</span></p>
+    </div>
+    <div class="t-grid">
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« Le visage de ma fille quand elle l'a entendue… inestimable. Elle l'a déjà écoutée plus de cent fois. »</blockquote><p class="attr">Denis Girard, Mirabel<span>Cadeau pour sa fille</span></p></div>
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« Elle a vraiment pleuré. Les paroles reflétaient parfaitement tout notre parcours ensemble. »</blockquote><p class="attr">Anthony Ouellet, Laval<span>Anniversaire de mariage</span></p></div>
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« Ma mère l'a écoutée vingt fois le premier jour. Maintenant, elle l'appelle sa chanson. »</blockquote><p class="attr">Vanessa Lachance, Brossard<span>Fête des Mères</span></p></div>
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« On a dansé dessus au souper d'anniversaire. Le personnel du restaurant a applaudi. »</blockquote><p class="attr">Jean-François Simard, Lévis<span>Anniversaire de mariage</span></p></div>
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« J'ai rendu l'anniversaire de ma meilleure amie inoubliable. Elle a pleuré de joie devant tout le monde. »</blockquote><p class="attr">Hélène Giroux, Montebello<span>Anniversaire d'une amie</span></p></div>
+      <div class="t-card"><p class="stars">★★★★★</p><blockquote>« Vingt-cinq ans de mariage résumés en trois minutes. Chaque couplet a fait ressurgir un souvenir. »</blockquote><p class="attr">Manon Blais, Montréal<span>Anniversaire de mariage</span></p></div>
+    </div>
+    <div class="t-cta">
+      <a class="btn" href="/creer">Je veux créer cette surprise <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="sec bg-cream" id="faq">
+  <div class="sec-in">
+    <div class="head">
+      <span class="kick">Tu te demandes peut-être…</span>
+      <h2>Quelques <em>réponses</em></h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Combien ça coûte ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">
+          L'aperçu est toujours <strong>100 % gratuit</strong> — tu écoutes ta chanson complète avant de décider quoi que ce soit.<br><br>
+          Si elle te touche et que tu veux la garder pour toujours :<br>
+          <span class="prix">79,97 $ CAD — une seule fois, pas d'abonnement.</span><br><br>
+          Pour une chanson originale, composée uniquement pour toi, avec leur prénom et vos souvenirs — c'est moins qu'un bon resto.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Je ne sais pas quoi écrire — est-ce correct ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Tout à fait. Quelques phrases suffisent : leur prénom, ce que tu aimes d'eux, un souvenir précieux, l'occasion. On s'occupe du reste.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Combien de temps avant de recevoir la chanson ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Quelques minutes après avoir rempli le formulaire, tu reçois ton aperçu. Pense à vérifier tes courriels indésirables — et si tu ne la trouves pas, écris-nous.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Qu'est-ce qui arrive si je n'aime pas la chanson ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">On offre une garantie de satisfaction. Si tu n'es pas satisfait après l'achat, écris-nous et on travaille avec toi pour qu'elle soit parfaite — révisions sans frais supplémentaires.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Comment je reçois ma chanson ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Par courriel. Tu peux la télécharger en MP3 haute qualité, la partager avec qui tu veux et la conserver indéfiniment.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Comment la chanson est-elle créée ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Chaque chanson est composée sur mesure à partir des informations que tu partages — prénom, souvenirs, style musical — à l'aide de nos outils de création assistée par intelligence artificielle. Aucune chanson n'est identique à une autre.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">Est-ce que ma chanson est privée ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Oui. Seules les personnes avec lesquelles tu partages le lien peuvent y accéder. On ne partage jamais les chansons publiquement sans ton autorisation.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" onclick="qFaq(this)" aria-expanded="false">
+          <span class="faq-qt">D'où venez-vous ? Est-ce une vraie entreprise ?</span><span class="faq-ic">+</span>
+        </button>
+        <div class="faq-a">Oui — nous sommes une entreprise basée au Québec. Toutes les chansons sont créées en français. On peut aussi faire des demandes spéciales dans d'autres langues : écris-nous.</div>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a class="btn" href="/creer">Créer leur chanson maintenant <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="final">
+  <div class="final-in">
+    <span class="hand">Offre-leur un moment…</span>
+    <h2>…qu'ils n'oublieront jamais.</h2>
+    <p>Raconte-nous leur histoire. Aperçu gratuit en quelques minutes. Tu paies seulement si tu l'adores.</p>
+    <a class="btn" href="/creer" style="display:inline-flex;">Créer leur chanson <span class="arr">→</span></a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ft">
+  <p class="ft-name">Chanson Pour Toujours</p>
+  <p class="ft-tag">Fait avec ❤️ pour des moments inoubliables</p>
+  <p class="ft-email">Courriel : <a href="mailto:info@chansonpourtoujours.com">info@chansonpourtoujours.com</a></p>
+  <nav aria-label="Liens légaux">
+    <a href="https://chansonpourtoujours.com/politique-de-confidentialite-page">Politique de confidentialité</a>
+    <a href="https://chansonpourtoujours.com/conditions-dutilisation-page">Conditions d'utilisation</a>
+    <a href="https://chansonpourtoujours.com/politique-de-remboursement-page">Politique de remboursement</a>
+  </nav>
+  <p class="ft-copy">©2026 Chanson Pour Toujours, une marque de LabMarketing inc. Tous droits réservés.</p>
+  <p class="ft-prefs"><button type="button" onclick="reopenConsent()">Gérer mes préférences de témoins</button></p>
+</footer>
+
+<!-- ═══ STICKY BAR ═══ -->
+<div class="sticky" id="sticky" aria-hidden="true">
+  <a href="/creer">Créer leur chanson <span class="arr">→</span></a>
+</div>
+
+<!-- ═══ CONSENT ═══ -->
+<div class="consent" id="consent" role="dialog" aria-label="Consentement aux témoins">
+  <p class="consent-txt">On utilise des témoins (cookies) pour améliorer le site et nos publicités. <a href="https://chansonpourtoujours.com/politique-de-confidentialite-page">Politique de confidentialité</a>.</p>
+  <div class="consent-row">
+    <button type="button" class="cbtn cbtn-yes" onclick="consentSet(true)">Accepter</button>
+    <button type="button" class="cbtn cbtn-no" onclick="consentSet(false)">Refuser</button>
+  </div>
+</div>
+
+<script>
+/* ═══ HAMBURGER / DRAWER ═══ */
+var burger=document.getElementById('burger'),drawer=document.getElementById('drawer');
+function openDrawer(){burger.classList.add('open');drawer.classList.add('open');burger.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+function closeDrawer(){burger.classList.remove('open');drawer.classList.remove('open');burger.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+burger.addEventListener('click',function(){drawer.classList.contains('open')?closeDrawer():openDrawer();});
+drawer.addEventListener('click',function(e){if(e.target===drawer)closeDrawer();});
+
+/* ═══ MARQUEE — duplique pour boucle continue ═══ */
+(function(){var t=document.getElementById('marqTrack');if(t)t.innerHTML+=t.innerHTML;})();
+
+/* ═══ CONFETTIS ═══ */
+(function(){
+  var c=document.getElementById('confetti');if(!c)return;
+  var cols=['#EF5638','#E6A23C','#F6CE7C','#7C2A55','#FF7A5C','#5A1A3C'];
+  for(var i=0;i<16;i++){
+    var s=document.createElement('i');
+    s.style.cssText='left:'+(4+Math.random()*92)+'%;top:'+(4+Math.random()*72)+'%;background:'+cols[i%cols.length]+';animation-delay:'+(Math.random()*8)+'s;animation-duration:'+(5+Math.random()*4)+'s;';
+    if(i%3===0)s.style.borderRadius='50%';
+    c.appendChild(s);
+  }
+})();
+
+/* ═══ MINIBARS ═══ */
+var BH=[
+  [22,38,54,30,46,68,40,58,80,48,62,34,52,74,44,60,28,70,42,76,36,56,82,50,66,32,58,72,46,64,38,54,26,48,70,44,62,34,60,78],
+  [30,52,68,36,58,82,44,66,90,52,74,38,60,84,48,70,32,76,54,80,42,64,28,56,72,40,62,86,50,68,34,60,46,52,82,48,64,30,58,72],
+  [18,42,60,32,50,76,44,64,88,54,70,28,52,80,46,68,24,74,48,84,40,62,20,54,78,36,58,88,50,72,38,56,44,66,86,52,70,40,64,82],
+  [26,46,62,38,54,78,48,68,90,58,72,34,56,82,50,70,28,78,52,86,44,66,32,58,76,42,64,88,54,72,36,56,48,70,84,54,68,36,62,80],
+  [20,44,58,34,52,74,40,62,86,50,68,30,54,78,44,66,26,72,46,82,38,60,24,52,76,36,60,84,48,70,32,54,46,64,80,50,66,38,58,76]
+];
+(function(){
+  document.querySelectorAll('.track-bars, .ded-bars').forEach(function(mb,i){
+    BH[i%BH.length].forEach(function(h){
+      var s=document.createElement('span');
+      s.style.height=Math.max(14,h)+'%';
+      mb.appendChild(s);
+    });
+  });
+})();
+
+/* ═══ LECTEURS ═══ */
+function fmt(s){if(!isFinite(s)||s<0)s=0;var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
+function tDur(a){a.closest('.track').querySelector('.t-dur').textContent=fmt(a.duration);}
+function tTick(a){
+  var t=a.closest('.track');
+  t.querySelector('.t-cur').textContent=fmt(a.currentTime);
+  var bars=t.querySelectorAll('.track-bars span, .ded-bars span');
+  var idx=Math.floor((a.duration?a.currentTime/a.duration:0)*bars.length);
+  bars.forEach(function(b,i){b.classList.toggle('lit',i<=idx);});
+}
+function tPlay(a){
+  var t=a.closest('.track');
+  t.classList.add('playing');
+  var btn=t.querySelector('.track-play, .ded-btn');
+  if(btn)btn.innerHTML='❚❚';
+}
+function tPause(a){
+  var t=a.closest('.track');
+  t.classList.remove('playing');
+  var btn=t.querySelector('.track-play, .ded-btn');
+  if(btn)btn.innerHTML='▶';
+}
+function tEnd(a){
+  tPause(a);
+  var t=a.closest('.track');
+  t.querySelector('.t-cur').textContent='0:00';
+  t.querySelectorAll('.track-bars span, .ded-bars span').forEach(function(b){b.classList.remove('lit');});
+}
+function tToggle(btn){
+  var t=btn.closest('.track'),a=t.querySelector('audio');
+  document.querySelectorAll('.track audio').forEach(function(o){if(o!==a){o.pause();}});
+  a.paused?a.play():a.pause();
+}
+function tSeek(el,e){
+  var a=el.closest('.track').querySelector('audio');
+  var mb=el.closest('.track-bars-wrap').querySelector('.track-bars, .ded-bars');
+  var r=mb.getBoundingClientRect();
+  if(a.duration)a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;
+}
+function tSeekTouch(el,e){
+  e.preventDefault();
+  var touch=e.touches[0];
+  var a=el.closest('.track').querySelector('audio');
+  var mb=el.closest('.track-bars-wrap').querySelector('.track-bars, .ded-bars');
+  var r=mb.getBoundingClientRect();
+  if(a.duration)a.currentTime=Math.max(0,Math.min(1,(touch.clientX-r.left)/r.width))*a.duration;
+}
+
+/* ═══ STICKY ═══ */
+(function(){
+  var dock=document.getElementById('sticky'),consent=document.getElementById('consent');
+  function toggle(){
+    var v=window.scrollY>480;
+    dock.classList.toggle('show',v);
+    dock.setAttribute('aria-hidden',v?'false':'true');
+    if(consent.classList.contains('show'))consent.classList.toggle('docked',v);
+  }
+  toggle();
+  requestAnimationFrame(function(){requestAnimationFrame(function(){dock.classList.add('ready');});});
+  window.addEventListener('scroll',toggle,{passive:true});
+})();
+
+/* ═══ CONSENT ═══ */
+(function(){
+  var c=localStorage.getItem('cpt_consent');
+  if(!c)document.getElementById('consent').classList.add('show');
+  else if(c==='yes')loadPixel();
+})();
+function consentSet(ok){
+  localStorage.setItem('cpt_consent',ok?'yes':'no');
+  var b=document.getElementById('consent');
+  b.classList.remove('show','docked');
+  if(ok)loadPixel();
+}
+function reopenConsent(){
+  var b=document.getElementById('consent');
+  b.classList.add('show');
+  if(document.getElementById('sticky').classList.contains('show'))b.classList.add('docked');
+}
+function loadPixel(){
+  if(window._px)return;window._px=true;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init','TON_PIXEL_ID_CPT');fbq('track','PageView');
+}
+
+/* ═══ FAQ ═══ */
+function qFaq(btn){
+  var item=btn.closest('.faq-item'),open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(x){x.classList.remove('open');x.querySelector('.faq-q').setAttribute('aria-expanded','false');});
+  if(!open){item.classList.add('open');btn.setAttribute('aria-expanded','true');}
+}
+</script>
+</body>
+</html>
