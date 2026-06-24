@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Crée ta chanson · Chanson Pour Toujours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@600;700&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{
+  --cream:#FBF3E9;--cream2:#F5E8D6;--blush:#F2DBC8;
+  --wine:#5A1A3C;--wine2:#3D0F28;--plum:#7C2A55;
+  --coral:#EF5638;--coral2:#FF7A5C;
+  --gold:#E6A23C;--gold2:#F6CE7C;--gold3:#C9882B;
+  --ink:#2B1622;--mute:#7A5C6A;--line:#ECD9C8;--line2:#E2C8B0;--night:#1E0E18;
+  --ff-d:"Fraunces",Georgia,serif;--ff-h:"Caveat",cursive;--ff-s:"Mulish",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:var(--ff-s);background:var(--cream);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;line-height:1.6;}
+a{color:inherit;}
+.cpt-header{text-align:center;padding:24px 20px 0;flex-shrink:0;}
+.cpt-logo{font-family:var(--ff-d);font-weight:500;font-size:1.15rem;color:var(--wine);letter-spacing:-.01em;text-decoration:none;}
+.cpt-progress-header{padding:20px 24px 0;max-width:600px;margin:0 auto;width:100%;}
+.cpt-progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.cpt-progress-label{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);}
+.cpt-progress-count{font-size:11px;color:var(--mute);font-weight:700;}
+.cpt-progress-track{width:100%;height:5px;background:rgba(90,26,60,.10);border-radius:10px;overflow:hidden;}
+.cpt-progress-fill{height:100%;background:linear-gradient(to right,var(--coral),var(--gold));border-radius:10px;transition:width .4s ease;width:0%;}
+.cpt-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 40px;}
+.cpt-intro{max-width:560px;margin:14px auto 0;text-align:center;font-size:13px;color:var(--mute);line-height:1.55;}
+.cpt-card{width:100%;max-width:560px;background:#fff;border-radius:24px;padding:36px 32px;margin-top:24px;box-shadow:0 2px 0 rgba(90,26,60,.05),0 12px 36px rgba(90,26,60,.10);border:1px solid var(--line);display:none;animation:cpt-fade .3s ease;}
+.cpt-card.active{display:block;}
+@keyframes cpt-fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.cpt-eyebrow{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold3);margin-bottom:8px;}
+.cpt-title{font-family:var(--ff-d);font-style:italic;font-size:clamp(20px,5vw,27px);font-weight:500;color:var(--wine);line-height:1.3;margin-bottom:8px;}
+.cpt-sub{font-size:13px;color:var(--mute);line-height:1.6;margin-bottom:24px;}
+.cpt-label{display:block;text-align:left;font-size:12px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.cpt-input{width:100%;font-family:var(--ff-s);font-size:15px;color:var(--ink);background:var(--cream);border:1.5px solid var(--line2);border-radius:12px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none;}
+.cpt-input:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(239,86,56,.13);}
+.cpt-input::placeholder{color:rgba(122,92,106,.55);}
+.cpt-choices{display:flex;flex-direction:column;gap:10px;}
+.cpt-choices.cpt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cpt-choice{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:1.5px solid var(--line2);background:var(--cream);cursor:pointer;font-family:var(--ff-s);font-size:14px;font-weight:700;color:var(--ink);transition:all .18s;text-align:left;width:100%;user-select:none;}
+.cpt-choice:hover{border-color:var(--coral);background:var(--blush);}
+.cpt-choice.selected{border-color:var(--coral);background:rgba(239,86,56,.10);color:var(--wine);}
+.cpt-choice-emoji{font-size:18px;flex-shrink:0;line-height:1;}
+.cpt-choice-txt{display:flex;flex-direction:column;gap:1px;text-align:left;}
+.cpt-choice-txt strong{font-weight:800;font-size:15px;}
+.cpt-choice-txt small{font-weight:500;font-size:11.5px;color:var(--mute);line-height:1.3;}
+.cpt-choice.selected .cpt-choice-txt small{color:var(--plum);}
+.cpt-choices.cpt-grid-2 .cpt-choice{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:16px 10px;}
+.cpt-choices.cpt-grid-2 .cpt-choice-emoji{font-size:22px;}
+.cpt-hint{margin-top:18px;background:rgba(230,162,60,.08);border:1px solid rgba(230,162,60,.22);border-radius:12px;padding:14px 16px;}
+.cpt-hint-title{font-size:12px;font-weight:800;color:var(--gold3);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.cpt-hint ul{list-style:none;padding:0;}
+.cpt-hint ul li{font-size:12px;color:var(--mute);line-height:1.6;padding:2px 0;}
+.cpt-hint ul li::before{content:'✦ ';color:var(--gold3);font-size:9px;}
+.cpt-optional{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);background:rgba(122,92,106,.10);border-radius:6px;padding:2px 8px;margin-bottom:16px;}
+.cpt-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px;}
+.cpt-nav-single{justify-content:flex-end;}
+.cpt-prev{font-family:var(--ff-s);font-size:13px;font-weight:800;color:var(--mute);background:none;border:1.5px solid var(--line2);border-radius:999px;padding:11px 22px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.cpt-prev:hover{border-color:var(--coral);color:var(--coral);}
+.cpt-next{font-family:var(--ff-s);font-size:15px;font-weight:900;color:#fff;background:var(--coral);border:none;border-radius:999px;padding:14px 32px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;box-shadow:0 8px 22px rgba(239,86,56,.28);}
+.cpt-next:hover{background:#d94a2a;transform:translateY(-1px);}
+.cpt-consent{margin-top:16px;display:flex;align-items:flex-start;gap:10px;}
+.cpt-consent input[type="checkbox"]{margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--coral);cursor:pointer;}
+.cpt-consent-label{font-size:12px;color:var(--mute);line-height:1.6;}
+.cpt-consent-label a{color:var(--coral);text-decoration:underline;}
+.cpt-submit{font-family:var(--ff-s);font-size:16px;font-weight:900;color:#fff;background:var(--coral);border:none;border-radius:999px;padding:17px 36px;cursor:pointer;width:100%;display:block;transition:background .2s;box-shadow:0 10px 26px rgba(239,86,56,.3);margin-top:20px;}
+.cpt-submit:hover{background:#d94a2a;}
+.cpt-submit:disabled{opacity:.5;cursor:not-allowed;}
+.cpt-submit-note{font-size:11px;color:var(--mute);text-align:center;margin-top:10px;opacity:.8;}
+.cpt-error{font-size:12px;color:#c0392b;margin-top:6px;display:none;}
+.cpt-error.show{display:block;}
+.cpt-footer{text-align:center;padding:16px 20px 24px;font-size:11px;color:var(--mute);opacity:.7;}
+.cpt-footer a{color:var(--mute);}
+@media (max-width:480px){.cpt-card{padding:28px 20px;border-radius:18px;}}
+</style>
+</head>
+<body>
+
+<!-- Netlify Forms : noms de champs alignes sur la future base Airtable CPT (Lot 6) -->
+<form name="chanson-pour-toujours-survey" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="occasion">
+  <input type="text" name="recipient_name">
+  <input type="text" name="relationship">
+  <input type="text" name="music_style">
+  <input type="text" name="voice">
+  <input type="text" name="mood">
+  <textarea name="what_makes_special"></textarea>
+  <textarea name="memories"></textarea>
+  <textarea name="special_phrase"></textarea>
+  <input type="text" name="language">
+  <input type="email" name="email">
+  <input type="checkbox" name="consentement">
+  <input type="text" name="token">
+</form>
+
+<header class="cpt-header">
+  <a class="cpt-logo" href="/">Chanson Pour Toujours</a>
+</header>
+
+<div class="cpt-progress-header">
+  <div class="cpt-progress-meta">
+    <span class="cpt-progress-label">Ta chanson</span>
+    <span class="cpt-progress-count" id="cpt-progress-count">Étape 1 sur 10</span>
+  </div>
+  <div class="cpt-progress-track"><div class="cpt-progress-fill" id="cpt-progress-fill"></div></div>
+</div>
+
+<div class="cpt-wrap">
+
+  <p class="cpt-intro">Quelques réponses suffisent. Tu pourras tout ajuster avant de payer, et tes réponses servent seulement à créer ta chanson.</p>
+
+  <!-- Étape 1 : Occasion (5 regroupements) -->
+  <div class="cpt-card active" data-step="1">
+    <div class="cpt-eyebrow">Pour commencer</div>
+    <h2 class="cpt-title">Pour quelle occasion ?</h2>
+    <p class="cpt-sub">Choisis le grand thème qui colle le mieux au moment.</p>
+    <div class="cpt-choices" id="choices-occasion">
+      <button class="cpt-choice" data-value="Amour"><span class="cpt-choice-emoji">🌹</span><span class="cpt-choice-txt"><strong>Amour</strong><small>Couple, Saint-Valentin, mariage, demande</small></span></button>
+      <button class="cpt-choice" data-value="Anniversaire"><span class="cpt-choice-emoji">🎂</span><span class="cpt-choice-txt"><strong>Anniversaire</strong><small>La fête de quelqu'un que tu aimes</small></span></button>
+      <button class="cpt-choice" data-value="Famille"><span class="cpt-choice-emoji">👪</span><span class="cpt-choice-txt"><strong>Famille</strong><small>Fête des Mères ou des Pères, grands-parents, nouveau bébé</small></span></button>
+      <button class="cpt-choice" data-value="Célébration"><span class="cpt-choice-emoji">🎉</span><span class="cpt-choice-txt"><strong>Célébration</strong><small>Diplôme, retraite, temps des fêtes, une belle réussite</small></span></button>
+      <button class="cpt-choice" data-value="Juste parce que"><span class="cpt-choice-emoji">💛</span><span class="cpt-choice-txt"><strong>Juste parce que</strong><small>Amitié, merci, ou sans aucune raison</small></span></button>
+    </div>
+  </div>
+
+  <!-- Étape 2 : Nom du destinataire -->
+  <div class="cpt-card" data-step="2">
+    <div class="cpt-eyebrow">Pour qui</div>
+    <h2 class="cpt-title">Pour qui est cette chanson ?</h2>
+    <p class="cpt-sub">Son prénom, son surnom, ou ce qui le représente le mieux.</p>
+    <input class="cpt-input" type="text" id="input-recipient_name" placeholder="Ex : Roxanne, Maman, mon amour…" autocomplete="off" maxlength="80">
+    <div class="cpt-error" id="err-recipient_name">Entre un prénom ou un surnom (au moins quelques lettres).</div>
+    <div class="cpt-nav">
+      <button class="cpt-prev" data-target="1"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+      <button class="cpt-next" id="btn-next-2">Continuer <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Étape 3 : Relation -->
+  <div class="cpt-card" data-step="3">
+    <div class="cpt-eyebrow">Ton lien</div>
+    <h2 class="cpt-title" id="q3-title">Qui est cette personne pour toi ?</h2>
+    <p class="cpt-sub">Choisis ce qui s'applique le mieux.</p>
+    <div class="cpt-choices" id="choices-relationship">
+      <button class="cpt-choice" data-value="Partenaire"><span class="cpt-choice-emoji">❤️</span> Partenaire</button>
+      <button class="cpt-choice" data-value="Enfant"><span class="cpt-choice-emoji">🧒</span> Enfant</button>
+      <button class="cpt-choice" data-value="Nouveau-né"><span class="cpt-choice-emoji">🍼</span> Nouveau-né</button>
+      <button class="cpt-choice" data-value="Parent"><span class="cpt-choice-emoji">🙋</span> Parent</button>
+      <button class="cpt-choice" data-value="Grands-parents"><span class="cpt-choice-emoji">🌟</span> Grands-parents</button>
+      <button class="cpt-choice" data-value="Ami(e)"><span class="cpt-choice-emoji">🤝</span> Ami(e)</button>
+      <button class="cpt-choice" data-value="Moi-même"><span class="cpt-choice-emoji">😀</span> Moi-même</button>
+      <button class="cpt-choice" data-value="Animal de compagnie"><span class="cpt-choice-emoji">🐾</span> Animal de compagnie</button>
+      <button class="cpt-choice" data-value="Quelqu'un d'autre"><span class="cpt-choice-emoji">💛</span> Quelqu'un d'autre</button>
+    </div>
+    <div class="cpt-nav"><button class="cpt-prev" data-target="2"><i class="fa-solid fa-arrow-left"></i> Retour</button></div>
+  </div>
+
+  <!-- Étape 4 : Style musical -->
+  <div class="cpt-card" data-step="4">
+    <div class="cpt-eyebrow">La musique</div>
+    <h2 class="cpt-title">Quel style musical lui ressemble ?</h2>
+    <p class="cpt-sub">Choisis le style qui colle le mieux à la personne ou au moment.</p>
+    <div class="cpt-choices cpt-grid-2" id="choices-music_style">
+      <button class="cpt-choice" data-value="Pop"><span class="cpt-choice-emoji">🎵</span> Pop</button>
+      <button class="cpt-choice" data-value="Country"><span class="cpt-choice-emoji">🤠</span> Country</button>
+      <button class="cpt-choice" data-value="Acoustique"><span class="cpt-choice-emoji">🎻</span> Acoustique</button>
+      <button class="cpt-choice" data-value="Jazz"><span class="cpt-choice-emoji">🎷</span> Jazz</button>
+      <button class="cpt-choice" data-value="Reggae"><span class="cpt-choice-emoji">🌴</span> Reggae</button>
+      <button class="cpt-choice" data-value="Latin / Salsa"><span class="cpt-choice-emoji">💃</span> Latin / Salsa</button>
+      <button class="cpt-choice" data-value="Douce Mélodie"><span class="cpt-choice-emoji">🎹</span> Douce Mélodie</button>
+      <button class="cpt-choice" data-value="Orchestre Gospel"><span class="cpt-choice-emoji">🎼</span> Orchestre Gospel</button>
+      <button class="cpt-choice" data-value="R&B"><span class="cpt-choice-emoji">🎶</span> R&B</button>
+      <button class="cpt-choice" data-value="Électronique / Dance"><span class="cpt-choice-emoji">🎧</span> Électro / Dance</button>
+      <button class="cpt-choice" data-value="Rock"><span class="cpt-choice-emoji">🎸</span> Rock</button>
+      <button class="cpt-choice" data-value="Hip-Hop"><span class="cpt-choice-emoji">🎤</span> Hip-Hop</button>
+      <button class="cpt-choice" data-value="Cinématographique"><span class="cpt-choice-emoji">🎬</span> Cinématographique</button>
+    </div>
+    <div class="cpt-nav"><button class="cpt-prev" data-target="3"><i class="fa-solid fa-arrow-left"></i> Retour</button></div>
+  </div>
+
+  <!-- Étape 5 : Voix -->
+  <div class="cpt-card" data-step="5">
+    <div class="cpt-eyebrow">La voix</div>
+    <h2 class="cpt-title">Quelle voix pour l'interprète ?</h2>
+    <p class="cpt-sub">La voix qui chantera ta chanson.</p>
+    <div class="cpt-choices cpt-grid-2" id="choices-voice">
+      <button class="cpt-choice" data-value="Masculin"><span class="cpt-choice-emoji">🎙️</span> Masculin</button>
+      <button class="cpt-choice" data-value="Féminin"><span class="cpt-choice-emoji">🎤</span> Féminin</button>
+    </div>
+    <div class="cpt-nav"><button class="cpt-prev" data-target="4"><i class="fa-solid fa-arrow-left"></i> Retour</button></div>
+  </div>
+
+  <!-- Étape 6 : Ambiance -->
+  <div class="cpt-card" data-step="6">
+    <div class="cpt-eyebrow">L'ambiance</div>
+    <h2 class="cpt-title">Choisis l'ambiance de la chanson</h2>
+    <p class="cpt-sub">L'émotion qui guide la mélodie.</p>
+    <div class="cpt-choices cpt-grid-2" id="choices-mood">
+      <button class="cpt-choice" data-value="Romantique"><span class="cpt-choice-emoji">🌹</span> Romantique</button>
+      <button class="cpt-choice" data-value="Émotionnelle"><span class="cpt-choice-emoji">💧</span> Émotionnelle</button>
+      <button class="cpt-choice" data-value="Joyeuse et entraînante"><span class="cpt-choice-emoji">🎉</span> Joyeuse et entraînante</button>
+      <button class="cpt-choice" data-value="Drôle et enjouée"><span class="cpt-choice-emoji">😄</span> Drôle et enjouée</button>
+      <button class="cpt-choice" data-value="Énergique"><span class="cpt-choice-emoji">⚡</span> Énergique</button>
+      <button class="cpt-choice" data-value="Paisible"><span class="cpt-choice-emoji">🕊️</span> Paisible</button>
+      <button class="cpt-choice" data-value="Inspirante"><span class="cpt-choice-emoji">✨</span> Inspirante</button>
+    </div>
+    <div class="cpt-nav"><button class="cpt-prev" data-target="5"><i class="fa-solid fa-arrow-left"></i> Retour</button></div>
+  </div>
+
+  <!-- Étape 7 : Ce qui rend spécial -->
+  <div class="cpt-card" data-step="7">
+    <div class="cpt-eyebrow">Sa personnalité</div>
+    <h2 class="cpt-title" id="q7-title">Qu'est-ce qui rend cette personne spéciale ?</h2>
+    <p class="cpt-sub">Ce que tu aimes chez elle, sa personnalité, ce qui la rend unique.</p>
+    <textarea class="cpt-input" id="input-what_makes_special" rows="4" placeholder="Ex : Sa façon de faire rire tout le monde sans même essayer…"></textarea>
+    <div class="cpt-error" id="err-what_makes_special">Partage au moins quelques mots pour que la chanson lui ressemble vraiment.</div>
+    <div class="cpt-hint">
+      <div class="cpt-hint-title"><i class="fa-solid fa-lightbulb"></i> Plus de détails, chanson plus personnelle</div>
+      <ul>
+        <li>Son expression préférée ou ce qu'elle répète souvent</li>
+        <li>Une qualité qui la définit vraiment</li>
+        <li>Ce que les autres remarquent toujours chez elle</li>
+        <li>Ce que tu admires le plus</li>
+      </ul>
+    </div>
+    <div class="cpt-nav">
+      <button class="cpt-prev" data-target="6"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+      <button class="cpt-next" id="btn-next-7">Continuer <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Étape 8 : Souvenirs favoris -->
+  <div class="cpt-card" data-step="8">
+    <div class="cpt-eyebrow">Vos souvenirs</div>
+    <h2 class="cpt-title">Partage tes souvenirs favoris</h2>
+    <span class="cpt-optional">Optionnel</span>
+    <p class="cpt-sub">Ajoute des dates, des moments ou certains détails qui rendront la chanson encore plus vraie.</p>
+    <textarea class="cpt-input" id="input-memories" rows="4" placeholder="Ex : Notre premier voyage, sa façon de chanter dans l'auto…"></textarea>
+    <div class="cpt-hint">
+      <div class="cpt-hint-title"><i class="fa-solid fa-heart"></i> Des souvenirs qui touchent</div>
+      <ul>
+        <li>Un moment que vous êtes les seuls à connaître</li>
+        <li>Un rituel ou une habitude que vous partagez</li>
+        <li>Un voyage, une fête, une première fois</li>
+        <li>Une blague entre vous deux</li>
+      </ul>
+    </div>
+    <div class="cpt-nav">
+      <button class="cpt-prev" data-target="7"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+      <button class="cpt-next" id="btn-next-8">Continuer <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Étape 9 : Dernier détail -->
+  <div class="cpt-card" data-step="9">
+    <div class="cpt-eyebrow">La touche finale</div>
+    <h2 class="cpt-title">Un dernier détail pour rendre la chanson parfaite 🎵</h2>
+    <span class="cpt-optional">Optionnel</span>
+    <p class="cpt-sub">Y a-t-il un surnom, une expression ou une phrase qui doit absolument se retrouver dans la chanson ?</p>
+    <textarea class="cpt-input" id="input-special_phrase" rows="3" placeholder="Ex : Son surnom « Coccinelle », ou « je t'aime jusqu'à la lune »…"></textarea>
+    <div class="cpt-nav">
+      <button class="cpt-prev" data-target="8"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+      <button class="cpt-next" id="btn-next-9">Continuer <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Étape 10 : Langue + courriel + consentement -->
+  <div class="cpt-card" data-step="10">
+    <div class="cpt-eyebrow">Dernière étape</div>
+    <h2 class="cpt-title">Où veux-tu recevoir ta chanson ?</h2>
+    <p class="cpt-sub">Ton aperçu sera prêt en quelques minutes. Entre ton courriel pour le recevoir.</p>
+    <label class="cpt-label" for="input-language">Langue de la chanson</label>
+    <select class="cpt-input" id="input-language" style="margin-bottom:14px;">
+      <option value="fr-CA">Français (Canada)</option>
+      <option value="fr-FR">Français (France)</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+    <label class="cpt-label" for="input-email">Ton courriel</label>
+    <input class="cpt-input" type="email" id="input-email" placeholder="ton@courriel.com" autocomplete="email">
+    <div class="cpt-error" id="err-email">Entre un courriel valide.</div>
+    <div class="cpt-consent">
+      <input type="checkbox" id="consent-check">
+      <label class="cpt-consent-label" for="consent-check">
+        En soumettant ce formulaire, j'accepte les
+        <a href="/condition-de-vente" target="_blank">conditions de vente</a>
+        et la <a href="/politique-de-confidentialite" target="_blank">politique de confidentialité</a>
+        de Chanson Pour Toujours. Je consens à recevoir des communications par courriel.
+      </label>
+    </div>
+    <div class="cpt-error" id="err-consent">Accepte les conditions pour continuer.</div>
+    <input type="text" name="bot-field" style="display:none" tabindex="-1" autocomplete="off">
+    <div class="cpt-submit-wrap"><button class="cpt-submit" id="btn-submit">Créer ma chanson <i class="fa-solid fa-music"></i></button></div>
+    <p class="cpt-submit-note">100 % gratuit à essayer · Aperçu prêt en quelques minutes</p>
+    <div class="cpt-nav" style="margin-top:16px;"><button class="cpt-prev" data-target="9"><i class="fa-solid fa-arrow-left"></i> Retour</button></div>
+  </div>
+
+</div>
+
+<footer class="cpt-footer">© 2026 Chanson Pour Toujours, une marque de LabMarketing inc. · <a href="/politique-de-confidentialite">Confidentialité</a></footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ── CONFIG ──
+     TODO Lot 6 : brancher le vrai webhook Make CPT, le pixel CPT et l'endpoint de pré-remplissage.
+     Chaînage de pages calque sur CM : souvenirs -> revision. */
+  const TOTAL_STEPS    = 10;
+  const REVISION_URL   = '/revision';                /* meme page suivante que CM (adaptee a CPT) */
+  const MAKE_WEBHOOK_A = 'TON_WEBHOOK_MAKE_CPT';     /* placeholder : webhook du nouveau dossier Make CPT */
+  const PIXEL_ID_CPT   = 'TON_PIXEL_ID_CPT';         /* placeholder : pixel Meta du sous-compte CPT */
+  const MIN_CHARS      = 2;
+
+  /* ── TOKEN : clé de tout le parcours ──
+     Régénération : si on arrive avec ?id=TOKEN (UUID v4), on réutilise le token et on pré-remplit. Sinon, nouveau token. */
+  const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const idParam = new URLSearchParams(window.location.search).get('id') || '';
+  const isRegen = UUID_V4.test(idParam);
+  const token = isRegen
+    ? idParam
+    : ((window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : 'cpt-' + Date.now() + '-' + Math.random().toString(16).slice(2));
+
+  /* ── ATTRIBUTION META ── */
+  function getParam(n){ return new URLSearchParams(window.location.search).get(n) || ''; }
+  function getCookie(n){ var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m?m.pop():''; }
+
+  /* ── Pixel Meta (consentement requis) ── */
+  function cptConsentOK(){ try{ return localStorage.getItem('cpt_consent')==='yes'; }catch(e){ return false; } }
+  function cptLoadPixel(){ if(window._px||PIXEL_ID_CPT==='TON_PIXEL_ID_CPT')return; window._px=true; !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',PIXEL_ID_CPT);fbq('track','PageView'); }
+  async function cptEid(s){ try{ var bb=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(s).trim().toLowerCase())); return Array.prototype.map.call(new Uint8Array(bb), function(x){return x.toString(16).padStart(2,'0');}).join(''); }catch(e){ return ''; } }
+  async function cptPixel(eventName, evtKey, tok){ if(!cptConsentOK()||!tok)return; cptLoadPixel(); if(!window.fbq)return; var o={}; var id=await cptEid(tok+'.'+evtKey); if(id)o.eventID=id; try{ fbq('track',eventName,{},o); }catch(e){} }
+  if(cptConsentOK()) cptLoadPixel();
+
+  /* ── ÉTAT : noms = champs Airtable CPT ── */
+  const data = {
+    token:              token,
+    regeneration:       isRegen,
+    occasion:           '',
+    recipient_name:     '',
+    relationship:       '',
+    music_style:        '',
+    voice:              '',
+    mood:               '',
+    what_makes_special: '',
+    memories:           '',
+    special_phrase:     '',
+    language:           'fr-CA',
+    email:              '',
+    consentement:       false,
+    fbclid:       getParam('fbclid'),
+    fbp:          getCookie('_fbp'),
+    fbc:          getCookie('_fbc'),
+    utm_source:   getParam('utm_source'),
+    utm_medium:   getParam('utm_medium'),
+    utm_campaign: getParam('utm_campaign'),
+    utm_content:  getParam('utm_content'),
+    utm_term:     getParam('utm_term'),
+    landing_page: window.location.pathname
+  };
+
+  let currentStep = 1;
+
+  function updateProgress(step){
+    document.getElementById('cpt-progress-fill').style.width = Math.round(((step-1)/TOTAL_STEPS)*100)+'%';
+    document.getElementById('cpt-progress-count').textContent = 'Étape '+step+' sur '+TOTAL_STEPS;
+  }
+
+  function goTo(step){
+    document.querySelectorAll('.cpt-card').forEach(function(c){ c.classList.remove('active'); });
+    var t = document.querySelector('[data-step="'+step+'"]');
+    if(t){ t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+    currentStep = step; updateProgress(step);
+    /* Personnalisation par le prénom une fois connu */
+    if(data.recipient_name){
+      var q3=document.getElementById('q3-title'); if(q3) q3.textContent='Qui est '+data.recipient_name+' pour toi ?';
+      var q7=document.getElementById('q7-title'); if(q7) q7.textContent='Qu\'est-ce qui rend '+data.recipient_name+' spécial(e) ?';
+    }
+  }
+
+  function bindChoices(containerId, dataKey, nextStep){
+    var c=document.getElementById(containerId); if(!c) return;
+    c.querySelectorAll('.cpt-choice').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        c.querySelectorAll('.cpt-choice').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        data[dataKey] = btn.dataset.value;
+        setTimeout(function(){ goTo(nextStep); }, 220);
+      });
+    });
+  }
+  bindChoices('choices-occasion',     'occasion',     2);
+  bindChoices('choices-relationship', 'relationship', 4);
+  bindChoices('choices-music_style',  'music_style',  5);
+  bindChoices('choices-voice',        'voice',        6);
+  bindChoices('choices-mood',         'mood',         7);
+
+  /* ── PRÉ-REMPLISSAGE (régénération) — branché au Lot 6 via /api/lire-survey ── */
+  function setVal(id, v){ var el=document.getElementById(id); if(el && v) el.value = v; }
+  function selectChoice(containerId, dataKey, value){
+    if(!value) return;
+    var c=document.getElementById(containerId); if(!c) return;
+    c.querySelectorAll('.cpt-choice').forEach(function(b){
+      if(b.dataset.value === value){ b.classList.add('selected'); data[dataKey] = value; }
+    });
+  }
+  var wantPrefill = isRegen && (new URLSearchParams(window.location.search).get('regen') === '1');
+  window.addEventListener('pageshow', function(e){ if(e.persisted) location.reload(); });
+  if(wantPrefill){
+    try { history.replaceState({}, '', '/souvenirs?id=' + encodeURIComponent(token)); } catch(e){}
+    fetch('/api/lire-survey', {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({ token: token })
+    })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(s){
+      if(!s) return;
+      setVal('input-recipient_name',     s.prenom);
+      setVal('input-what_makes_special', s.unicite);
+      setVal('input-memories',           s.souvenirs);
+      setVal('input-special_phrase',     s.phrase);
+      data.recipient_name     = s.prenom    || '';
+      data.what_makes_special = s.unicite   || '';
+      data.memories           = s.souvenirs || '';
+      data.special_phrase     = s.phrase    || '';
+      selectChoice('choices-occasion',     'occasion',     s.occasion);
+      selectChoice('choices-relationship', 'relationship', s.relation);
+      selectChoice('choices-music_style',  'music_style',  s.style_musical);
+      selectChoice('choices-voice',        'voice',        s.voix);
+      selectChoice('choices-mood',         'mood',         s.ambiance);
+    })
+    .catch(function(){ /* best-effort : si échec, formulaire vierge */ });
+  }
+
+  /* ── Navigation retour ── */
+  document.querySelectorAll('.cpt-prev').forEach(function(btn){
+    btn.addEventListener('click', function(){ goTo(parseInt(btn.dataset.target)); });
+  });
+
+  /* ── Étape 2 : prénom (minimum) ── */
+  document.getElementById('btn-next-2').addEventListener('click', function(){
+    var v=document.getElementById('input-recipient_name').value.trim();
+    var e=document.getElementById('err-recipient_name');
+    if(v.length < MIN_CHARS){ e.classList.add('show'); return; }
+    e.classList.remove('show'); data.recipient_name=v; goTo(3);
+  });
+  document.getElementById('input-recipient_name').addEventListener('keydown', function(e){
+    if(e.key==='Enter') document.getElementById('btn-next-2').click();
+  });
+
+  /* ── Étape 7 : ce qui rend spécial (requis) ── */
+  document.getElementById('btn-next-7').addEventListener('click', function(){
+    var v=document.getElementById('input-what_makes_special').value.trim();
+    var e=document.getElementById('err-what_makes_special');
+    if(v.length < MIN_CHARS){ e.classList.add('show'); return; }
+    e.classList.remove('show'); data.what_makes_special=v; goTo(8);
+  });
+
+  /* ── Étapes 8 et 9 : optionnelles ── */
+  document.getElementById('btn-next-8').addEventListener('click', function(){
+    data.memories=document.getElementById('input-memories').value.trim(); goTo(9);
+  });
+  document.getElementById('btn-next-9').addEventListener('click', function(){
+    data.special_phrase=document.getElementById('input-special_phrase').value.trim(); goTo(10);
+  });
+
+  function redirigerVersRevision(){
+    window.location.href = REVISION_URL + '?id=' + encodeURIComponent(token);
+  }
+
+  /* ── Étape 10 : soumission ── */
+  document.getElementById('btn-submit').addEventListener('click', function(){
+    var email=document.getElementById('input-email').value.trim();
+    var consent=document.getElementById('consent-check').checked;
+    var errEmail=document.getElementById('err-email');
+    var errConsent=document.getElementById('err-consent');
+    var valid=true;
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ errEmail.classList.add('show'); valid=false; }
+    else errEmail.classList.remove('show');
+    if(!consent){ errConsent.classList.add('show'); valid=false; }
+    else errConsent.classList.remove('show');
+    if(!valid) return;
+
+    data.email=email; data.consentement=true;
+    var langSel=document.getElementById('input-language'); data.language=(langSel&&langSel.value)||'fr-CA';
+
+    var btn=document.getElementById('btn-submit');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Envoi en cours…';
+
+    /* Backup Netlify Forms (fire-and-forget) */
+    var fd=new FormData();
+    fd.append('form-name','chanson-pour-toujours-survey');
+    Object.keys(data).forEach(function(k){ fd.append(k, data[k]); });
+    fetch('/', { method:'POST', body:fd }).catch(function(){});
+
+    /* Make A : crée Client + Project + paroles + Generation (Lot 6). */
+    if(MAKE_WEBHOOK_A==='TON_WEBHOOK_MAKE_CPT'){
+      cptPixel('Lead','lead',token); redirigerVersRevision(); return;
+    }
+    fetch(MAKE_WEBHOOK_A, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify(data)
+    })
+    .then(function(){ cptPixel('Lead','lead',token); redirigerVersRevision(); })
+    .catch(function(err){ console.error('Erreur webhook Make:', err); redirigerVersRevision(); });
+  });
+
+  updateProgress(1);
+})();
+</script>
+</body>
+</html>
