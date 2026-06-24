@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Ton aperçu · Chanson Pour Toujours</title>
+<script>
+/* ── PARAMÈTRES URL — exécuté en premier ── */
+(function() {
+  var p = new URLSearchParams(window.location.search);
+  window._CM = {
+    nom:    p.get('name')    || '',
+    taskid: p.get('taskid')  || '',
+    id:     p.get('id')      || '',   /* token UUID — clé de régénération */
+    mp3:    p.get('preview1')|| ''
+  };
+  /* Loi 25 — on NE garde PAS de PII dans l'URL : dès le chargement, on nettoie la barre d'adresse
+     pour ne laisser que le token (?id=). Le nom est gardé EN MÉMOIRE (perso ci-dessous) mais ne
+     persiste plus dans l'historique / le presse-papier / un partage de lien. L'email n'est plus
+     lu du tout (creer-checkout va le chercher côté serveur sur le Client lié). */
+  if (window._CM.id) {
+    try { history.replaceState({}, '', '/apercu?id=' + encodeURIComponent(window._CM.id)); } catch (e) {}
+  }
+  /* Titre de l'onglet personnalisé */
+  if (window._CM.nom) {
+    document.title = 'Aperçu pour ' + window._CM.nom + ' · Chanson Pour Toujours';
+  }
+})();
+
+/* ── SUIVI FUNNEL (best-effort, ne casse jamais l'UX) ──
+   Envoie un événement de parcours à /api/suivi-funnel. sendBeacon survit à la navigation
+   (utile pour checkout_started juste avant la redirection Stripe). */
+/* Pixel Meta (consentement requis) — eventID = sha256(token.evt) pour dédup avec le CAPI serveur. */
+window._cmPixel = function(eventName, evtKey, tok, custom){
+  try{ if(localStorage.getItem('cpt_consent')!=='yes' || !tok) return; }catch(e){ return; }
+  (function ld(){ if(window._px)return; window._px=true; !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','TON_PIXEL_ID_CPT');fbq('track','PageView'); })();
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode((tok+'.'+evtKey).trim().toLowerCase())).then(function(buf){ var id=Array.prototype.map.call(new Uint8Array(buf),function(x){return x.toString(16).padStart(2,'0');}).join(''); var o=id?{eventID:id}:{}; try{ if(eventName==='PreviewPlayed'){fbq('trackCustom',eventName,custom||{},o);}else{fbq('track',eventName,custom||{},o);} }catch(e){} }).catch(function(){ try{ if(eventName==='PreviewPlayed'){fbq('trackCustom',eventName,custom||{});}else{fbq('track',eventName,custom||{});} }catch(e){} });
+};
+
+window._cmFunnel = function(evt) {
+  try {
+    var t = (window._CM && window._CM.id) || '';
+    if (!t) return;                                  /* pas de token => aperçu legacy, on ne track pas */
+    var payload = JSON.stringify({ token: t, event: evt });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/suivi-funnel', new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch('/api/suivi-funnel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function(){});
+    }
+    if (window._cmPixel) {
+      if (evt === 'preview_played') window._cmPixel('PreviewPlayed', 'preview_played', t);
+      else if (evt === 'checkout_started') window._cmPixel('InitiateCheckout', 'checkout_started', t);
+    }
+  } catch (e) {}
+};
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Mulish:wght@400;500;600;700;800&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════
+   PALETTE & TOKENS
+════════════════════════════════════════════ */
+:root {
+  --cm-plum-dark:  #5A1A3C;
+  --cm-plum-mid:   #7C2A55;
+  --cm-mauve:      #EF5638;
+  --cm-gold:       #C9882B;
+  --cm-gold-light: #F6CE7C;
+  --cm-off-white:  #F5E8D6;
+  --cm-white:      #FFFFFF;
+  --cm-bg:         #FBF3E9;
+  --cm-text:       #2B1622;
+  --cm-text-sub:   #7A5C6A;
+  --cm-border-w:   2.5px;
+}
+
+/* ════════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Mulish', sans-serif;
+  background: var(--cm-bg);
+  color: var(--cm-text);
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+/* ════════════════════════════════════════════
+   HEADER LOGO / MARQUE
+════════════════════════════════════════════ */
+.cm-header {
+  text-align: center;
+  padding: 32px 20px 0;
+}
+.cm-logo {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--cm-plum-dark);
+  letter-spacing: 0.01em;
+}
+.cm-logo span {
+  color: var(--cm-gold);
+}
+
+/* ════════════════════════════════════════════
+   HERO — MESSAGE D'ACCUEIL
+════════════════════════════════════════════ */
+.cm-hero {
+  text-align: center;
+  padding: 36px 24px 12px;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.cm-hero-eyebrow {
+  font-family: 'Mulish', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cm-gold);
+  margin-bottom: 14px;
+}
+.cm-hero-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(26px, 6vw, 34px);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--cm-plum-dark);
+  margin-bottom: 16px;
+}
+.cm-hero-sub {
+  font-family: 'Mulish', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cm-text-sub);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ════════════════════════════════════════════
+   DIVIDER ORNEMENT
+════════════════════════════════════════════ */
+.cm-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 24px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.cm-divider::before,
+.cm-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(92,45,74,0.20));
+}
+.cm-divider::after {
+  background: linear-gradient(to left, transparent, rgba(92,45,74,0.20));
+}
+.cm-divider-icon {
+  color: var(--cm-gold);
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* ════════════════════════════════════════════
+   PLAYER — REPRIS DE TON CODE EXISTANT
+════════════════════════════════════════════ */
+@property --cm-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+#cm-player-root .cm-players-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+  padding: 0 20px;
+}
+#cm-player-root .cm-player-wrap {
+  display: flex;
+  justify-content: center;
+  font-family: 'Mulish', sans-serif;
+  width: 100%;
+  max-width: 300px;
+}
+#cm-player-root .cm-player-box {
+  width: 100%;
+  padding: calc(24px + var(--cm-border-w));
+  border-radius: 24px;
+  background:
+    linear-gradient(var(--cm-white), var(--cm-white)) padding-box,
+    conic-gradient(
+      from var(--cm-border-angle),
+      #3D0F28             0%,
+      var(--cm-mauve)     22%,
+      #E6A23C             40%,
+      #F6CE7C             50%,
+      #E6A23C             60%,
+      var(--cm-mauve)     78%,
+      #3D0F28             100%
+    ) border-box;
+  border: 2.5px solid transparent;
+  animation: cm-spin-border 5s linear infinite;
+  text-align: center;
+  box-shadow:
+    0 0 0   2px rgba(0,0,0,0.08),
+    0 0 12px 4px rgba(0,0,0,0.18),
+    0 0 28px 10px rgba(0,0,0,0.13),
+    0 0 50px 20px rgba(0,0,0,0.07),
+    0 10px 36px rgba(92,45,74,0.10);
+}
+@keyframes cm-spin-border { to { --cm-border-angle: 360deg; } }
+
+@supports not (background: conic-gradient(from 1deg, red, red) border-box) {
+  #cm-player-root .cm-player-box {
+    background: var(--cm-white);
+    border: var(--cm-border-w) solid var(--cm-mauve);
+    position: relative; overflow: hidden;
+  }
+  #cm-player-root .cm-player-box::before {
+    content: ''; position: absolute; inset: -80px;
+    background: conic-gradient(var(--cm-plum-dark), var(--cm-mauve), var(--cm-gold-light), var(--cm-off-white), var(--cm-gold), var(--cm-mauve), var(--cm-plum-dark));
+    animation: cm-spin-pseudo 5s linear infinite; z-index: 0;
+  }
+  #cm-player-root .cm-player-box::after {
+    content: ''; position: absolute; inset: var(--cm-border-w);
+    background: var(--cm-white); border-radius: 22px; z-index: 1;
+  }
+  #cm-player-root .cm-player-box > * { position: relative; z-index: 2; }
+  @keyframes cm-spin-pseudo { to { transform: rotate(360deg); } }
+}
+
+#cm-player-root .cm-title {
+  font-size: 15px; font-weight: 600; letter-spacing: 0.1em;
+  color: var(--cm-plum-dark); text-transform: uppercase; margin-bottom: 14px;
+}
+#cm-player-root .cm-equalizer {
+  display: flex; justify-content: center; align-items: flex-end;
+  gap: 5px; height: 30px; margin-bottom: 14px; width: 100%;
+}
+#cm-player-root .cm-equalizer span {
+  width: 4px; height: 10px;
+  background: linear-gradient(to top, var(--cm-mauve), var(--cm-plum-dark));
+  border-radius: 3px; flex-shrink: 0;
+  animation: cm-wave 0.9s infinite ease-in-out; animation-play-state: paused;
+}
+#cm-player-root .cm-equalizer.active span { animation-play-state: running; }
+#cm-player-root .cm-equalizer span:nth-child(1) { animation-delay: 0s;    animation-duration: 0.85s; }
+#cm-player-root .cm-equalizer span:nth-child(2) { animation-delay: 0.12s; animation-duration: 1.05s; }
+#cm-player-root .cm-equalizer span:nth-child(3) { animation-delay: 0.25s; animation-duration: 0.75s; }
+#cm-player-root .cm-equalizer span:nth-child(4) { animation-delay: 0.07s; animation-duration: 1.15s; }
+#cm-player-root .cm-equalizer span:nth-child(5) { animation-delay: 0.40s; animation-duration: 0.70s; }
+#cm-player-root .cm-equalizer span:nth-child(6) { animation-delay: 0.18s; animation-duration: 1.00s; }
+#cm-player-root .cm-equalizer span:nth-child(7) { animation-delay: 0.33s; animation-duration: 0.90s; }
+#cm-player-root .cm-equalizer span:nth-child(8) { animation-delay: 0.05s; animation-duration: 0.80s; }
+#cm-player-root .cm-equalizer span:nth-child(9) { animation-delay: 0.50s; animation-duration: 0.95s; }
+@keyframes cm-wave { 0%,100% { height: 8px; } 50% { height: 26px; } }
+
+#cm-player-root .cm-play-btn {
+  width: 64px; height: 64px; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, var(--cm-plum-mid), var(--cm-plum-dark));
+  color: white; font-size: 18px; cursor: pointer; margin: 12px 0;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 4px 16px rgba(92,45,74,0.28);
+}
+#cm-player-root .cm-play-btn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(92,45,74,0.40); }
+#cm-player-root .cm-time {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--cm-text-sub); margin: 10px 0;
+}
+#cm-player-root .cm-progress-wrap {
+  position: relative; width: 100%; height: 5px;
+  background: rgba(92,45,74,0.10); border-radius: 10px;
+}
+#cm-player-root .cm-progress-bar {
+  position: absolute; height: 100%; width: 0%;
+  background: linear-gradient(to right, var(--cm-plum-mid), var(--cm-gold));
+  border-radius: 10px;
+}
+#cm-player-root .cm-progress {
+  position: absolute; width: 100%; height: 20px;
+  top: -7px; left: 0; margin: 0; opacity: 0; cursor: pointer; z-index: 2;
+}
+#cm-player-root .cm-volume-wrap {
+  display: flex; align-items: center;
+  justify-content: center; gap: 12px; margin-top: 20px;
+}
+#cm-player-root .cm-mute-btn {
+  background: none; border: none; color: var(--cm-plum-mid);
+  font-size: 15px; cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px;
+}
+#cm-player-root .cm-mute-btn:hover { opacity: 0.7; transform: scale(1.1); }
+#cm-player-root .cm-volume-slider-wrap {
+  position: relative; width: 90px; height: 4px;
+  background: rgba(92,45,74,0.12); border-radius: 10px;
+}
+#cm-player-root .cm-volume-bar {
+  position: absolute; height: 100%; width: 100%;
+  background: linear-gradient(to right, var(--cm-mauve), var(--cm-gold));
+  border-radius: 10px; transition: width 0.1s;
+}
+#cm-player-root .cm-volume {
+  position: absolute; width: 100%; height: 4px;
+  opacity: 0; cursor: pointer; top: 0; left: 0; margin: 0;
+}
+#cm-player-root .cm-ia-mention {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: 28px;
+  font-family: 'Mulish', sans-serif; font-size: 11px;
+  color: var(--cm-text-sub); opacity: 0.80; letter-spacing: 0.01em;
+}
+#cm-player-root .cm-ia-mention svg { flex-shrink: 0; color: var(--cm-gold); }
+
+@media (prefers-reduced-motion: reduce) {
+  #cm-player-root .cm-player-box { animation: none; }
+  #cm-player-root .cm-equalizer span { animation: none; height: 14px; }
+}
+
+/* ── Sélecteur de versions (affiché s'il y a plus d'une version) ── */
+#cm-player-root .cm-version-picker { max-width: 300px; margin: 0 auto 18px; padding: 0 20px; }
+#cm-player-root .cm-version-picker-label {
+  display: block; text-align: center; font-family: 'Mulish', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--cm-gold); margin-bottom: 8px;
+}
+#cm-player-root .cm-version-select {
+  width: 100%; padding: 11px 36px 11px 14px; border-radius: 12px;
+  border: var(--cm-border-w) solid var(--cm-mauve);
+  background: var(--cm-white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238B4A6E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 14px center;
+  color: var(--cm-text); font-family: 'Mulish', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  text-align: center; text-align-last: center;
+}
+#cm-player-root .cm-version-select:focus { outline: none; border-color: var(--cm-plum-mid); }
+
+/* ════════════════════════════════════════════
+   PRICING BOX — REPRIS & INTÉGRÉ
+════════════════════════════════════════════ */
+.cm-pricing-section {
+  padding: 40px 20px 0;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+#cm-pricing-root {
+  --cm-border-static: linear-gradient(
+    135deg,
+    #C9882B 0%, #F6CE7C 30%, #EF5638 55%, #F6CE7C 75%, #C9882B 100%
+  );
+  width: 100%;
+  font-family: 'Mulish', sans-serif;
+}
+#cm-pricing-root * { box-sizing: border-box; }
+
+#cm-pricing-root .cm-card {
+  width: 100%; padding: 28px 26px; border-radius: 24px;
+  background:
+    linear-gradient(var(--cm-off-white), var(--cm-off-white)) padding-box,
+    var(--cm-border-static) border-box;
+  border: var(--cm-border-w) solid transparent;
+  box-shadow:
+    0 0 0   2px rgba(0,0,0,0.06),
+    0 0 14px 4px rgba(196,150,58,0.20),
+    0 0 32px 10px rgba(196,150,58,0.10),
+    0 8px 28px rgba(92,45,74,0.10);
+}
+#cm-pricing-root .cm-version-label {
+  text-align: center; font-family: 'Mulish', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase; color: var(--cm-gold); margin-bottom: 10px;
+}
+#cm-pricing-root .cm-price-block { text-align: center; margin-bottom: 20px; }
+#cm-pricing-root .cm-price {
+  font-family: 'Mulish', sans-serif; font-weight: 700;
+  font-size: 20px; color: var(--cm-text-sub);
+}
+#cm-pricing-root .cm-price-meta {
+  display: block; font-size: 11px; color: var(--cm-text-sub);
+  margin-top: 2px; opacity: .8;
+}
+#cm-pricing-root .cm-value { list-style: none; margin: 0 0 20px; padding: 0; }
+#cm-pricing-root .cm-value li {
+  display: flex; align-items: flex-start; gap: 11px;
+  font-size: 15px; line-height: 1.45; color: var(--cm-text);
+  padding: 12px 0; border-bottom: 1px solid rgba(92,45,74,0.10);
+}
+#cm-pricing-root .cm-value li:last-child { border-bottom: none; }
+#cm-pricing-root .cm-spark { color: var(--cm-gold); font-size: 14px; line-height: 1.5; flex-shrink: 0; }
+#cm-pricing-root .cm-anchor {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 17px; font-weight: 600; line-height: 1.55;
+  color: var(--cm-plum-dark); text-align: center;
+  margin: 0 0 22px; -webkit-text-fill-color: var(--cm-plum-dark);
+}
+
+@property --cm-btn-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+#cm-pricing-root .cm-btn-wrap {
+  padding: 1.5px; border-radius: 999px;
+  background: conic-gradient(
+    from var(--cm-btn-angle),
+    var(--cm-plum-dark)  0%, var(--cm-mauve) 25%,
+    var(--cm-gold)       45%, var(--cm-gold-light) 50%,
+    var(--cm-gold)       55%, var(--cm-mauve) 75%, var(--cm-plum-dark) 100%
+  );
+  animation: cm-btn-spin 4s linear infinite; margin-bottom: 0;
+}
+@keyframes cm-btn-spin { to { --cm-btn-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) { #cm-pricing-root .cm-btn-wrap { animation: none; } }
+
+#cm-pricing-root .stripe-btn {
+  font-family: 'Mulish', sans-serif; background: var(--cm-plum-dark);
+  color: #fff; border: none; border-radius: 999px;
+  padding: 18px 42px; font-size: 17px; font-weight: 700;
+  cursor: pointer; transition: all 0.25s ease; width: 100%; display: block;
+}
+#cm-pricing-root .stripe-btn:hover { background: var(--cm-plum-mid); }
+#cm-pricing-root .stripe-btn:active { transform: scale(0.98); }
+
+/* (Sélecteur de version retiré — remplacé par le popup de confirmation #cm-buy-overlay au clic acheter.) */
+
+/* Order bumps (cases indépendantes, au-dessus du bouton payer) */
+#cm-pricing-root .cm-bumps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 18px; text-align: left; }
+#cm-pricing-root .cm-bump {
+  display: flex; align-items: flex-start; gap: 11px; cursor: pointer;
+  font-family: 'Mulish', sans-serif; font-size: 14px; line-height: 1.4; color: var(--cm-text);
+  padding: 12px 14px; border: 1.5px solid rgba(92,45,74,0.18); border-radius: 12px; background: var(--cm-white);
+}
+#cm-pricing-root .cm-bump:hover { border-color: var(--cm-mauve); }
+#cm-pricing-root .cm-bump input { margin-top: 1px; width: 18px; height: 18px; accent-color: var(--cm-plum-dark); flex-shrink: 0; cursor: pointer; }
+#cm-pricing-root .cm-bump-price { color: var(--cm-plum-dark); font-weight: 700; white-space: nowrap; }
+#cm-pricing-root .cm-bump-desc { display: block; font-size: 12px; color: var(--cm-text-sub); margin-top: 3px; }
+
+#cm-pricing-root .cm-trust {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; gap: 6px; margin-top: 16px;
+  font-size: 12px; color: var(--cm-text-sub);
+}
+#cm-pricing-root .cm-trust-item { display: inline-flex; align-items: center; gap: 4px; }
+#cm-pricing-root .cm-trust-item svg { color: var(--cm-gold); }
+#cm-pricing-root .cm-trust-sep { opacity: .4; }
+#cm-pricing-root .cm-spark-sm { font-size: 11px; color: var(--cm-gold); }
+
+/* ════════════════════════════════════════════
+   SECTION — CE QUI SE PASSE APRÈS L'ACHAT
+════════════════════════════════════════════ */
+.cm-section {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 48px 20px 0;
+}
+.cm-section-eyebrow {
+  font-family: 'Mulish', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cm-gold);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.cm-section-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 400;
+  color: var(--cm-plum-dark);
+  text-align: center;
+  line-height: 1.35;
+  margin-bottom: 32px;
+}
+
+/* Étapes */
+.cm-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.cm-steps::before {
+  content: '';
+  position: absolute;
+  left: 21px;
+  top: 28px;
+  bottom: 28px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--cm-mauve), var(--cm-gold), var(--cm-mauve));
+  opacity: 0.35;
+}
+.cm-step {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 0 0 28px;
+  position: relative;
+}
+.cm-step:last-child { padding-bottom: 0; }
+.cm-step-num {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cm-plum-mid), var(--cm-plum-dark));
+  color: #fff;
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(92,45,74,0.25);
+  position: relative;
+  z-index: 1;
+}
+.cm-step-body {}
+.cm-step-label {
+  font-family: 'Mulish', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--cm-gold);
+  margin-bottom: 4px;
+}
+.cm-step-title {
+  font-family: 'Mulish', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cm-plum-dark);
+  margin-bottom: 4px;
+}
+.cm-step-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--cm-text-sub);
+}
+
+/* ════════════════════════════════════════════
+   SECTION — GARANTIE
+════════════════════════════════════════════ */
+.cm-guarantee-box {
+  margin: 48px 20px 0;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(135deg, var(--cm-plum-dark) 0%, #3D0F28 100%);
+  border-radius: 20px;
+  padding: 28px 26px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cm-guarantee-box::before {
+  content: '✦';
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  font-size: 80px;
+  color: rgba(255,255,255,0.03);
+  pointer-events: none;
+}
+.cm-guarantee-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+.cm-guarantee-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--cm-gold-light);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.cm-guarantee-text {
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.80);
+}
+.cm-guarantee-text strong {
+  color: var(--cm-gold-light);
+  font-weight: 700;
+}
+
+/* ════════════════════════════════════════════
+   SECTION — TÉMOIGNAGES
+   ⚠️ À remplacer par vrais témoignages validés
+════════════════════════════════════════════ */
+.cm-testimonials {
+  max-width: 540px;
+  margin: 48px auto 0;
+  padding: 0 20px;
+}
+.cm-testimonial-card {
+  background: var(--cm-white);
+  border-radius: 16px;
+  padding: 22px 22px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(92,45,74,0.10);
+  box-shadow: 0 2px 12px rgba(92,45,74,0.07);
+}
+.cm-testimonial-card:last-child { margin-bottom: 0; }
+.cm-stars {
+  color: var(--cm-gold);
+  font-size: 13px;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+.cm-testimonial-text {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cm-text);
+  margin-bottom: 12px;
+}
+.cm-testimonial-author {
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cm-text-sub);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cm-testimonial-notice {
+  font-size: 10px;
+  color: var(--cm-text-sub);
+  opacity: 0.6;
+  text-align: center;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* ════════════════════════════════════════════
+   SECTION — FAQ
+════════════════════════════════════════════ */
+.cm-faq {
+  max-width: 540px;
+  margin: 48px auto 0;
+  padding: 0 20px;
+}
+.cm-faq-item {
+  border-bottom: 1px solid rgba(92,45,74,0.12);
+  padding: 0;
+}
+.cm-faq-item:first-child { border-top: 1px solid rgba(92,45,74,0.12); }
+.cm-faq-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  cursor: pointer;
+  text-align: left;
+  gap: 16px;
+}
+.cm-faq-question {
+  font-family: 'Mulish', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cm-plum-dark);
+  line-height: 1.4;
+}
+.cm-faq-icon {
+  color: var(--cm-gold);
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: transform 0.25s;
+}
+.cm-faq-item.open .cm-faq-icon { transform: rotate(45deg); }
+.cm-faq-answer {
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cm-text-sub);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s;
+  padding-bottom: 0;
+}
+.cm-faq-item.open .cm-faq-answer {
+  max-height: 300px;
+  padding-bottom: 18px;
+}
+
+/* ════════════════════════════════════════════
+   SECTION STORYTELLING — POURQUOI ÇA COMPTE
+════════════════════════════════════════════ */
+.cm-story {
+  max-width: 540px;
+  margin: 48px auto 0;
+  padding: 0 20px;
+  text-align: center;
+}
+.cm-story-quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(18px, 4.5vw, 22px);
+  line-height: 1.55;
+  color: var(--cm-plum-dark);
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+.cm-story-sub {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cm-text-sub);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ════════════════════════════════════════════
+   CTA BOTTOM — RÉPÉTITION DU BOUTON
+════════════════════════════════════════════ */
+.cm-cta-bottom {
+  max-width: 540px;
+  margin: 48px auto 0;
+  padding: 0 20px;
+  text-align: center;
+}
+.cm-cta-bottom-pre {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--cm-plum-dark);
+  margin-bottom: 20px;
+  line-height: 1.45;
+}
+
+@property --cm-btn2-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.cm-btn-wrap-2 {
+  padding: 1.5px; border-radius: 999px;
+  background: conic-gradient(
+    from var(--cm-btn2-angle),
+    var(--cm-plum-dark) 0%, var(--cm-mauve) 25%,
+    var(--cm-gold) 45%, var(--cm-gold-light) 50%,
+    var(--cm-gold) 55%, var(--cm-mauve) 75%, var(--cm-plum-dark) 100%
+  );
+  animation: cm-btn2-spin 4s linear infinite;
+}
+@keyframes cm-btn2-spin { to { --cm-btn2-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .cm-btn-wrap-2 { animation: none; } }
+
+.stripe-btn-2 {
+  font-family: 'Mulish', sans-serif; background: var(--cm-plum-dark);
+  color: #fff; border: none; border-radius: 999px;
+  padding: 18px 42px; font-size: 17px; font-weight: 700;
+  cursor: pointer; transition: all 0.25s ease; width: 100%; display: block;
+}
+.stripe-btn-2:hover { background: var(--cm-plum-mid); }
+.stripe-btn-2:active { transform: scale(0.98); }
+
+.cm-cta-legal {
+  font-size: 11px;
+  color: var(--cm-text-sub);
+  opacity: 0.7;
+  margin-top: 12px;
+}
+
+/* ════════════════════════════════════════════
+   STICKY DOCK
+════════════════════════════════════════════ */
+.cm-sticky {
+  --plum: #4a3b57;
+  --plum-deep: #2e2238;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  display: flex; justify-content: center;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(245,241,248,.94); backdrop-filter: blur(8px);
+  border-top: 1px solid #e3dceb;
+  transform: translateY(120%); transition: transform .28s ease;
+  pointer-events: none;
+}
+.cm-sticky.show { transform: none; pointer-events: auto; }
+.cm-sticky-btn {
+  font-family: 'Mulish', system-ui, sans-serif;
+  display: flex; width: 100%; max-width: 440px;
+  align-items: center; justify-content: center;
+  background: var(--plum); color: #fff; text-decoration: none;
+  font-weight: 800; font-size: 1.04rem; padding: 15px 28px;
+  border-radius: 999px; box-shadow: 0 4px 14px rgba(46,34,56,.18);
+  transition: background .15s, transform .15s; cursor: pointer; border: none;
+}
+.cm-sticky-btn:hover { background: var(--plum-deep); transform: translateY(-1px); }
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+.cm-footer {
+  max-width: 540px;
+  margin: 48px auto 0;
+  padding: 0 20px 40px;
+  text-align: center;
+  border-top: 1px solid rgba(92,45,74,0.10);
+  padding-top: 24px;
+}
+.cm-footer p {
+  font-size: 11px;
+  color: var(--cm-text-sub);
+  opacity: 0.6;
+  line-height: 1.7;
+}
+.cm-footer a {
+  color: var(--cm-text-sub);
+  text-decoration: underline;
+  opacity: 0.7;
+}
+
+/* ════════════════════════════════════════════
+   RÉGÉNÉRATION — 2 boutons + modal « autre style »
+════════════════════════════════════════════ */
+.cm-regen-actions { display: flex; flex-direction: column; gap: 10px; max-width: 340px; margin: 18px auto 0; text-align: center; }
+.cm-regen-btn {
+  border-radius: 999px; padding: 12px 22px; font: 600 15px/1.2 'Mulish', sans-serif; cursor: pointer;
+  border: 1.5px solid var(--cm-plum-dark); background: none; color: var(--cm-plum-dark);
+  transition: background .15s, color .15s;
+}
+.cm-regen-btn:hover { background: var(--cm-plum-dark); color: #fff; }
+.cm-regen-btn-sec { border-color: var(--cm-mauve); color: var(--cm-plum-mid); }
+.cm-regen-btn-sec:hover { background: var(--cm-plum-mid); color: #fff; }
+.cm-regen-note { font-size: 13px; color: var(--cm-text-sub); margin-top: 2px; }
+
+.cm-modal-overlay {
+  position: fixed; inset: 0; z-index: 100; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+  background: rgba(46,26,40,0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.cm-modal-overlay.show { display: flex; }
+.cm-modal {
+  position: relative; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto;
+  background: var(--cm-white); border-radius: 20px; padding: 28px 24px;
+  box-shadow: 0 12px 48px rgba(46,26,40,0.30); font-family: 'Mulish', sans-serif;
+}
+.cm-modal-close {
+  position: absolute; top: 10px; right: 16px; background: none; border: none;
+  font-size: 26px; line-height: 1; color: var(--cm-text-sub); cursor: pointer;
+}
+.cm-modal-title { font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--cm-plum-dark); margin-bottom: 6px; }
+.cm-modal-sub { font-size: 14px; line-height: 1.5; color: var(--cm-text-sub); margin-bottom: 8px; }
+.cm-modal-label {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--cm-gold); margin: 16px 0 6px;
+}
+.cm-modal-opt { color: var(--cm-text-sub); font-weight: 600; text-transform: none; letter-spacing: 0; }
+.cm-modal-select {
+  width: 100%; padding: 11px 36px 11px 14px; border-radius: 12px;
+  border: var(--cm-border-w) solid var(--cm-mauve); background-color: var(--cm-white);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238B4A6E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat; background-position: right 14px center;
+  color: var(--cm-text); font-family: 'Mulish', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+}
+.cm-modal-select:focus { outline: none; border-color: var(--cm-plum-mid); }
+.cm-modal-textarea {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: var(--cm-border-w) solid var(--cm-mauve); background: var(--cm-white);
+  font-family: 'Mulish', sans-serif; font-size: 14px; color: var(--cm-text); resize: vertical;
+}
+.cm-modal-textarea:focus { outline: none; border-color: var(--cm-plum-mid); }
+.cm-modal-hint { font-size: 12px; line-height: 1.5; color: var(--cm-text-sub); margin: 8px 0 0; }
+.cm-modal-actions { display: flex; gap: 12px; margin-top: 22px; }
+.cm-modal-cancel, .cm-modal-confirm { flex: 1; border-radius: 999px; padding: 13px 18px; font: 700 15px/1 'Mulish', sans-serif; cursor: pointer; }
+.cm-modal-cancel { background: none; border: 1.5px solid var(--cm-mauve); color: var(--cm-plum-dark); }
+.cm-modal-confirm { background: var(--cm-plum-dark); border: none; color: #fff; }
+.cm-modal-confirm:disabled { opacity: 0.6; cursor: default; }
+.cm-modal-note { font-size: 12px; color: var(--cm-text-sub); margin-top: 12px; text-align: center; min-height: 1em; }
+/* Sélection de version + order bumps dans le popup d'achat */
+.cm-ver-opt { display:block; width:100%; margin-bottom:8px; padding:12px 16px; border-radius:14px; border:2px solid var(--cm-mauve); background:var(--cm-white); font:700 14px/1.3 'Mulish',sans-serif; color:var(--cm-text); cursor:pointer; text-align:left; transition:border-color .15s, background .15s; }
+.cm-ver-opt.selected { border-color:var(--cm-plum-dark); background:var(--cm-off-white); }
+.cm-buy-bumps-title { font:700 11px/1 'Mulish',sans-serif; letter-spacing:.06em; text-transform:uppercase; color:var(--cm-text-sub); margin:16px 0 8px; }
+.cm-bump { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border:1.5px solid var(--cm-mauve); border-radius:14px; margin-bottom:8px; cursor:pointer; background:var(--cm-white); }
+.cm-bump input { margin-top:2px; flex:none; width:18px; height:18px; accent-color:var(--cm-plum-dark); }
+.cm-bump span { font:600 14px/1.35 'Mulish',sans-serif; color:var(--cm-text); }
+.cm-bump small { display:block; font-weight:400; color:var(--cm-text-sub); margin-top:2px; }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGO ══════════════════════════════════════════ -->
+<header class="cm-header">
+  <div class="cm-logo">Chanson Pour <span>Toujours</span></div>
+</header>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<section class="cm-hero">
+  <div class="cm-hero-eyebrow">Ton aperçu est prêt</div>
+  <h1 class="cm-hero-title" id="cm-hero-title">Voici la chanson composée pour cette personne</h1>
+  <p class="cm-hero-sub">Écoute l'aperçu d'une minute ci-dessous. La version complète (3 à 4 min.) te sera envoyée immédiatement après ton achat.</p>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ PLAYER ══════════════════════════════════════════ -->
+<div id="cm-player-root">
+  <!-- Sélecteur de versions — masqué tant qu'il n'y a qu'une version (rempli par lire-versions). -->
+  <div class="cm-version-picker" id="cm-version-picker" style="display:none;">
+    <label class="cm-version-picker-label" for="cm-version-select">Ta version</label>
+    <select class="cm-version-select" id="cm-version-select" aria-label="Choisir la version à écouter"></select>
+  </div>
+  <div class="cm-players-container">
+    <div class="cm-player-wrap" data-param="preview1">
+      <div class="cm-player-box">
+        <div class="cm-title">Aperçu · 1 min.</div>
+        <div class="cm-equalizer cm-eq">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <audio class="cm-audio"><source src="" type="audio/mpeg"></audio>
+        <button class="cm-play-btn"><i class="fa-solid fa-play"></i></button>
+        <div class="cm-time">
+          <span class="cm-current">0:00</span>
+          <span class="cm-total">0:00</span>
+        </div>
+        <div class="cm-progress-wrap">
+          <div class="cm-progress-bar"></div>
+          <input class="cm-progress" type="range" min="0" max="60" step="0.01" value="0">
+        </div>
+        <div class="cm-volume-wrap">
+          <button class="cm-mute-btn"><i class="fa-solid fa-volume-high"></i></button>
+          <div class="cm-volume-slider-wrap">
+            <div class="cm-volume-bar"></div>
+            <input class="cm-volume" type="range" min="0" max="1" step="0.01" value="1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-ia-mention">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+    </svg>
+    Chanson créée par intelligence artificielle à partir des souvenirs que tu as partagés
+  </div>
+</div>
+
+<!-- ══ PRICING ══════════════════════════════════════════ -->
+<section class="cm-pricing-section">
+  <div id="cm-pricing-root">
+    <div class="cm-card">
+      <div class="cm-version-label">Chanson complète · 3–4 min.</div>
+      <div class="cm-price-block">
+        <span class="cm-price">79,97 $</span>
+        <span class="cm-price-meta">CAD · taxes en sus · paiement unique</span>
+      </div>
+      <ul class="cm-value">
+        <li><span class="cm-spark">✦</span> <span id="cm-value-nom">Une chanson originale, composée uniquement pour cette personne</span></li>
+        <li><span class="cm-spark">✦</span> Une page privée à partager avec toute la famille, pour la faire vivre</li>
+        <li><span class="cm-spark">✦</span> Fichier MP3 à télécharger et garder pour toujours</li>
+        <li><span class="cm-spark">✦</span> Qualité studio professionnelle</li>
+        <li><span class="cm-spark">✦</span> Révisions illimitées jusqu'à satisfaction, sans frais</li>
+      </ul>
+      <p class="cm-anchor">Une œuvre sur mesure, sans les semaines d'attente ni la facture d'un compositeur professionnel.</p>
+      <!-- Choix de version : déplacé dans un POPUP de confirmation au clic « acheter » (si >1 version). -->
+
+      <!-- Order bumps : dans le POPUP de confirmation (#cm-buy-bumps, cases optionnelles) → line_items Stripe. -->
+
+      <div class="cm-btn-wrap">
+        <button id="stripeBtnPricing" class="stripe-btn">Obtenir la chanson complète</button>
+      </div>
+      <div class="cm-trust">
+        <span class="cm-trust-item">
+          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M12 21s-7.5-4.9-10-9.3C.6 9.1 1.7 5.6 4.8 5.1 7 4.8 8.7 6.2 9.5 7.6 10.3 6.2 12 4.8 14.2 5.1c3.1.5 4.2 4 2.8 6.6C19.5 16.1 12 21 12 21z"/></svg>
+          Révisions illimitées
+        </span>
+        <span class="cm-trust-sep">·</span>
+        <span class="cm-trust-item">
+          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
+          Paiement sécurisé Stripe
+        </span>
+        <span class="cm-trust-sep">·</span>
+        <span class="cm-trust-item"><span class="cm-spark cm-spark-sm">✦</span> Livraison immédiate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ CE QUI SE PASSE APRÈS L'ACHAT ══════════════════ -->
+<section class="cm-section">
+  <div class="cm-section-eyebrow">Ce qui se passe ensuite</div>
+  <h2 class="cm-section-title">Ta chanson complète, entre tes mains en quelques minutes</h2>
+  <div class="cm-steps">
+    <div class="cm-step">
+      <div class="cm-step-num">1</div>
+      <div class="cm-step-body">
+        <div class="cm-step-label">Immédiatement</div>
+        <div class="cm-step-title">Tu reçois ta chanson complète</div>
+        <div class="cm-step-desc">Dès le paiement confirmé, un courriel t'est envoyé avec la chanson en version intégrale (3 à 4 minutes) et ton fichier MP3 à télécharger.</div>
+      </div>
+    </div>
+    <div class="cm-step">
+      <div class="cm-step-num">2</div>
+      <div class="cm-step-body">
+        <div class="cm-step-label">Sur demande</div>
+        <div class="cm-step-title">Tu demandes des ajustements, si nécessaire</div>
+        <div class="cm-step-desc">La chanson ne te convient pas tout à fait ? Tu nous écris et on la retravaille, autant de fois qu'il le faut, sans frais.</div>
+      </div>
+    </div>
+    <div class="cm-step">
+      <div class="cm-step-num">3</div>
+      <div class="cm-step-body">
+        <div class="cm-step-label">Pour toujours</div>
+        <div class="cm-step-title">Tu partages ta chanson avec ceux qui comptent</div>
+        <div class="cm-step-desc">Ta page privée est accessible à toute la famille, à tout moment. Un endroit doux où retrouver sa voix, à ton rythme.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ GARANTIE ══════════════════════════════════════════ -->
+<div class="cm-guarantee-box">
+  <div class="cm-guarantee-icon">🕊️</div>
+  <div class="cm-guarantee-title" id="cm-guarantee-title">Révisée jusqu'à ce qu'elle lui ressemble vraiment</div>
+  <p class="cm-guarantee-text">
+    Nous savons que cette chanson doit être juste. C'est pourquoi nous offrons des <strong>révisions illimitées, sans frais</strong>, jusqu'à ce que tu sentes qu'elle lui ressemble vraiment.<br><br>
+    Tu n'as pas à accepter quelque chose qui ne te touche pas. On est là pour l'ajuster avec toi.
+  </p>
+</div>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ STORYTELLING ══════════════════════════════════════ -->
+<section class="cm-story">
+  <p class="cm-story-quote">« Ce que tu ressens pour elle mérite d'être chanté. »</p>
+  <p class="cm-story-sub">Cette chanson est née des souvenirs que tu as partagés. Elle n'existe nulle part ailleurs. Elle ne ressemble à personne d'autre. Elle lui ressemble, à ce qu'elle représente pour toi.<br><br>Certains l'offrent pour un anniversaire. D'autres pour une demande en mariage, ou juste pour dire je t'aime. D'autres encore la gardent précieusement, à réécouter les bons soirs.<br><br>Il n'y a pas de mauvaise occasion pour faire sentir à quelqu'un à quel point il compte.</p>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ TÉMOIGNAGES ══════════════════════════════════════ -->
+<!-- Témoignages clients réels (fournis par Maxime). S'assurer du consentement écrit de chaque personne pour publier prénom + ville. -->
+<section class="cm-testimonials">
+  <div class="cm-section-eyebrow">Ce que des clients ont vécu</div>
+  <h2 class="cm-section-title" style="margin-bottom: 24px;">Des mots qu'on nous a partagés</h2>
+
+  <div class="cm-testimonial-card">
+    <div class="cm-stars">★★★★★</div>
+    <p class="cm-testimonial-text">« Les paroles étaient tellement personnelles. On avait l'impression qu'elles connaissaient toute notre relation. On la joue maintenant à chaque anniversaire. »</p>
+    <div class="cm-testimonial-author">David Morin, Charlevoix</div>
+  </div>
+
+  <div class="cm-testimonial-card">
+    <div class="cm-stars">★★★★★</div>
+    <p class="cm-testimonial-text">« J'ai pleuré en passant la commande. Puis j'ai pleuré à nouveau en entendant la chanson terminée. Elle était tout simplement parfaite. »</p>
+    <div class="cm-testimonial-author">Amélie Fortin, Gatineau</div>
+  </div>
+
+  <div class="cm-testimonial-card">
+    <div class="cm-stars">★★★★★</div>
+    <p class="cm-testimonial-text">« Je recommande à 100 %. La qualité est incroyable; on dirait de la musique qu'on entend à la radio. Absolument génial. »</p>
+    <div class="cm-testimonial-author">Yves Martel, Matane</div>
+  </div>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ FAQ ══════════════════════════════════════════════ -->
+<section class="cm-faq">
+  <div class="cm-section-eyebrow">Questions fréquentes</div>
+  <h2 class="cm-section-title" style="margin-bottom: 24px;">Ce qu'on nous demande souvent</h2>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Quand vais-je recevoir la chanson complète ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Tout de suite après ton paiement. Tu reçois un courriel avec la version complète (3 à 4 minutes) et ton fichier MP3 à télécharger. Pense à vérifier tes indésirables si tu ne le vois pas dans les minutes qui suivent.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Puis-je demander des modifications ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Oui, sans limite et sans frais. Si la chanson ne te touche pas comme tu l'espérais (une parole à ajuster, un ton à changer, un souvenir à intégrer autrement), tu nous écris et on la retravaille jusqu'à ce qu'elle soit juste pour toi.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">La chanson est-elle créée par un humain ou par l'IA ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Ta chanson est composée par intelligence artificielle à partir des souvenirs que tu as partagés dans le formulaire. Une personne de notre équipe veille sur la qualité à chaque étape, pour qu'elle ressemble vraiment à la personne que tu aimes.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Est-ce que je peux la faire jouer lors d'une fête ou d'un événement ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Oui. La chanson t'appartient : tu peux la partager librement, la faire jouer lors d'une fête, ou la garder pour toi. Le fichier MP3 est à toi pour toujours.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Le paiement est-il sécurisé ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Oui. Le paiement est traité par Stripe, l'un des processeurs les plus sécurisés au monde. Tes informations financières ne nous sont jamais transmises directement.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Puis-je obtenir un remboursement ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Comme chaque chanson est entièrement personnalisée, on n'offre pas de remboursement une fois la chanson livrée. Par contre, on la révise autant de fois qu'il le faut pour qu'elle te convienne pleinement. Voir nos <a href="/condition-de-vente">conditions de vente</a>.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Qu'est-ce qui est inclus pour 79,97 $ ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Ta chanson complète (3 à 4 minutes), ton fichier MP3 à garder pour toujours, et les révisions jusqu'à ce qu'elle soit parfaite. Aucuns frais cachés, aucun abonnement.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">C'est quoi la version instrumentale et les paroles karaoké ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">Deux options facultatives. L'instrumentale, c'est la musique sans la voix (parfaite pour une fête ou un fond sonore). La version karaoké, c'est ta chanson avec les paroles à l'écran, idéale à chanter ensemble. Tu les ajoutes seulement si tu le souhaites.</div>
+  </div>
+
+  <div class="cm-faq-item">
+    <button class="cm-faq-btn">
+      <span class="cm-faq-question">Et si la version complète me touche moins que l'aperçu ?</span>
+      <i class="fa-solid fa-plus cm-faq-icon"></i>
+    </button>
+    <div class="cm-faq-answer">L'aperçu, c'est déjà ta chanson : la version complète, c'est la même, du début à la fin. Et si un détail clochait, on la révise sans frais jusqu'à ce qu'elle soit juste.</div>
+  </div>
+</section>
+
+<div class="cm-divider"><span class="cm-divider-icon">✦</span></div>
+
+<!-- ══ CTA BAS DE PAGE ══════════════════════════════════ -->
+<section class="cm-cta-bottom">
+  <p class="cm-cta-bottom-pre" id="cm-cta-pre">Cette personne mérite une chanson qui lui ressemble.</p>
+  <div class="cm-btn-wrap-2">
+    <button id="stripeBtnBottom" class="stripe-btn-2">Obtenir la chanson complète</button>
+  </div>
+  <p class="cm-cta-legal">79,97 $ CAD · taxes en sus · livraison immédiate · révisions illimitées</p>
+</section>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════ -->
+<footer class="cm-footer">
+  <p>
+    © 2025 Chanson Pour Toujours, une marque de LabMarketing inc.<br>
+    <a href="/condition-de-vente">Conditions de vente</a> ·
+    <a href="/politique-de-remboursement">Politique de remboursement</a> ·
+    <a href="/politique-de-confidentialite">Politique de confidentialité</a>
+  </p>
+</footer>
+
+<!-- ══ STICKY DOCK ══════════════════════════════════════ -->
+<div class="cm-sticky" id="cmSticky" aria-hidden="true">
+  <button class="cm-sticky-btn" id="stripeBtnSticky">Obtenir la chanson complète</button>
+</div>
+
+<!-- ══ MODAL : CONFIRMER LA CHANSON + OPTIONS (order bumps) ══ -->
+<div class="cm-modal-overlay" id="cm-buy-overlay" aria-hidden="true">
+  <div class="cm-modal" role="dialog" aria-modal="true" aria-labelledby="cm-buy-modal-title">
+    <button type="button" class="cm-modal-close" id="cm-buy-close" aria-label="Fermer">&times;</button>
+    <div class="cm-modal-title" id="cm-buy-modal-title">Confirme ta chanson</div>
+    <p class="cm-modal-sub">Choisis la version à recevoir, puis ajoute des options si tu le souhaites.</p>
+    <div id="cm-buy-options"></div>
+    <div id="cm-buy-bumps"></div>
+    <button type="button" class="cm-modal-confirm" id="cm-buy-proceed" style="width:100%;margin-top:6px;">Procéder au paiement</button>
+    <p class="cm-modal-note" id="cm-buy-status" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<!-- ══ MODAL : ESSAYER UN AUTRE STYLE ════════════════════ -->
+<div class="cm-modal-overlay" id="cm-style-overlay" aria-hidden="true">
+  <div class="cm-modal" role="dialog" aria-modal="true" aria-labelledby="cm-style-modal-title">
+    <button type="button" class="cm-modal-close" id="cm-style-close" aria-label="Fermer">&times;</button>
+    <div class="cm-modal-title" id="cm-style-modal-title">Essayer un autre style</div>
+    <p class="cm-modal-sub">Même personne, même chanson : on ajuste l'habillage musical.</p>
+
+    <div id="cm-style-form">
+    <label class="cm-modal-label" for="cm-style-musique">Style musical</label>
+    <select class="cm-modal-select" id="cm-style-musique"></select>
+
+    <label class="cm-modal-label" for="cm-style-voix">Voix</label>
+    <select class="cm-modal-select" id="cm-style-voix"></select>
+
+    <label class="cm-modal-label" for="cm-style-ambiance">Ambiance</label>
+    <select class="cm-modal-select" id="cm-style-ambiance"></select>
+
+    <label class="cm-modal-label" for="cm-style-souvenirs">Ajouter ou retirer un souvenir <span class="cm-modal-opt">(optionnel)</span></label>
+    <textarea class="cm-modal-textarea" id="cm-style-souvenirs" rows="3" placeholder="Ex. : ajoutez un mot sur ses étés au chalet, ou retirez la mention de la pêche."></textarea>
+    <p class="cm-modal-hint">Sans nouveau souvenir, on garde les mêmes paroles et on change seulement la musique. Avec un souvenir, on réécrit d'abord les paroles pour ton approbation.</p>
+
+    <div class="cm-modal-actions">
+      <button type="button" class="cm-modal-cancel" id="cm-style-cancel">Annuler</button>
+      <button type="button" class="cm-modal-confirm" id="cm-style-confirm">Créer cette version</button>
+    </div>
+    </div><!-- /#cm-style-form -->
+    <p class="cm-modal-note" id="cm-style-status" role="status" aria-live="polite"></p>
+
+    <!-- Popup au cap (plafond serveur atteint) : message chaleureux + box courriel + alerte -->
+    <div id="cm-cap-help" style="display:none;">
+      <p class="cm-modal-hint" id="cm-cap-msg">Tu as exploré plusieurs versions pour cette personne, c'est la limite ici. On aimerait t'aider à créer LA version qui lui ressemble : laisse-nous ton courriel et on t'accompagne avec plaisir.</p>
+      <label class="cm-modal-label" for="cm-cap-email">Ton courriel</label>
+      <input class="cm-modal-select" id="cm-cap-email" type="email" inputmode="email" placeholder="toi@exemple.ca">
+      <div class="cm-modal-actions">
+        <button type="button" class="cm-modal-confirm" id="cm-cap-send">On m'aide avec plaisir</button>
+      </div>
+      <p class="cm-modal-note" id="cm-cap-status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<script>
+/* ── PLAYER ─────────────────────────────────────────── */
+(function() {
+  'use strict';
+  const ROOT = document.getElementById('cm-player-root');
+  if (!ROOT) return;
+  const urlParams = new URLSearchParams(window.location.search);
+  const START_TIME = 0;
+  const END_TIME = 60;
+  const DURATION = END_TIME - START_TIME;
+
+  ROOT.querySelectorAll('.cm-player-wrap').forEach(function(wrap) {
+    const param   = wrap.dataset.param || 'preview1';
+    const mp3Url  = urlParams.get(param);
+    const audio   = wrap.querySelector('.cm-audio');
+    const source  = audio.querySelector('source');
+    const btn     = wrap.querySelector('.cm-play-btn');
+    const eq      = wrap.querySelector('.cm-eq');
+    const progress= wrap.querySelector('.cm-progress');
+    const bar     = wrap.querySelector('.cm-progress-bar');
+    const current = wrap.querySelector('.cm-current');
+    const total   = wrap.querySelector('.cm-total');
+    const volInput= wrap.querySelector('.cm-volume');
+    const volBar  = wrap.querySelector('.cm-volume-bar');
+    const muteBtn = wrap.querySelector('.cm-mute-btn');
+    let lastVol = 1, isDragging = false;
+
+    function fmt(t) { var m=Math.floor(t/60),s=Math.floor(t%60); return m+':'+(s<10?'0'+s:s); }
+    function init() { audio.currentTime=START_TIME; progress.max=DURATION; total.innerText=fmt(DURATION); }
+    if (audio.readyState >= 1) init();
+    else audio.addEventListener('loadedmetadata', init);
+    audio.addEventListener('error', function() { total.innerText='Erreur'; btn.disabled=true; btn.style.opacity='0.5'; });
+
+    if (mp3Url) { source.src = mp3Url; audio.load(); }
+    else { wrap.style.opacity='0.5'; btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-link-slash"></i>'; }
+
+    btn.addEventListener('click', function() {
+      if (!source.src) return;
+      if (audio.paused) {
+        audio.play().then(function() { btn.innerHTML='<i class="fa-solid fa-pause"></i>'; eq.classList.add('active'); if(window._cmFunnel && !window._cmPreviewPinged){ window._cmPreviewPinged=true; window._cmFunnel('preview_played'); } }).catch(function(e){console.error(e);});
+      } else { audio.pause(); btn.innerHTML='<i class="fa-solid fa-play"></i>'; eq.classList.remove('active'); }
+    });
+
+    audio.addEventListener('timeupdate', function() {
+      var rel = audio.currentTime - START_TIME;
+      if (audio.currentTime >= END_TIME) { audio.pause(); audio.currentTime=START_TIME; btn.innerHTML='<i class="fa-solid fa-play"></i>'; eq.classList.remove('active'); }
+      if (!isDragging) { var pct=(rel/DURATION)*100; progress.value=rel; bar.style.width=pct+'%'; current.innerText=fmt(rel); }
+    });
+
+    progress.addEventListener('mousedown', function(){ isDragging=true; });
+    progress.addEventListener('touchstart', function(){ isDragging=true; });
+    progress.addEventListener('mouseup', function(){ isDragging=false; });
+    progress.addEventListener('touchend', function(){ isDragging=false; });
+    progress.addEventListener('input', function() { var val=parseFloat(progress.value); audio.currentTime=val+START_TIME; bar.style.width=(val/DURATION)*100+'%'; current.innerText=fmt(val); });
+
+    function setVolIcon(v) { muteBtn.innerHTML = v==0 ? '<i class="fa-solid fa-volume-xmark"></i>' : v<0.5 ? '<i class="fa-solid fa-volume-low"></i>' : '<i class="fa-solid fa-volume-high"></i>'; }
+    volInput.addEventListener('input', function() { var v=parseFloat(volInput.value); audio.volume=v; volBar.style.width=(v*100)+'%'; setVolIcon(v); });
+    muteBtn.addEventListener('click', function() {
+      if (audio.volume>0) { lastVol=audio.volume; audio.volume=0; volInput.value=0; volBar.style.width='0%'; setVolIcon(0); }
+      else { audio.volume=lastVol||1; volInput.value=audio.volume; volBar.style.width=(audio.volume*100)+'%'; setVolIcon(audio.volume); }
+    });
+  });
+})();
+
+/* ── CHARGE LES VERSIONS PAR TOKEN (lire-versions) ──────
+   La redirection arrive avec ?id=TOKEN. On recupere TOUTES les versions jouables du projet
+   (preview 60s signe cote serveur), on remplit le menu deroulant et on joue la version choisie.
+   La plus recente est selectionnee par defaut. Menu masque s'il n'y a qu'une version.
+   Compat legacy : si pas de token (?preview1=...), ce bloc ne fait rien et le lecteur charge preview1. */
+(function() {
+  var token = (window._CM && window._CM.id) || '';
+  if (!token) return;
+
+  var wrap   = document.querySelector('.cm-player-wrap');
+  if (!wrap) return;
+  var audio  = wrap.querySelector('.cm-audio');
+  var source = audio ? audio.querySelector('source') : null;
+  var btn    = wrap.querySelector('.cm-play-btn');
+  var picker = document.getElementById('cm-version-picker');
+  var select = document.getElementById('cm-version-select');
+
+  function loadInto(url) {
+    if (!source || !url) return;
+    try { if (audio) audio.pause(); } catch (e) {}
+    source.src = url; audio.load();
+    wrap.style.opacity = '1';
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = '<i class="fa-solid fa-play"></i>'; }
+  }
+
+  function labelOf(ver) {
+    var bits = [];
+    if (ver.style)    bits.push(ver.style);
+    if (ver.ambiance) bits.push(ver.ambiance);
+    if (!bits.length && ver.titre) bits.push(ver.titre);   /* repli sur le titre tant que le style par version n'existe pas (Phase 2) */
+    return 'V' + ver.v + (bits.length ? ' · ' + bits.join(' · ') : '');
+  }
+
+  fetch('/api/lire-versions', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: token })
+  })
+  .then(function(r) { return r.ok ? r.json() : null; })
+  .then(function(d) {
+    if (!d || !Array.isArray(d.versions) || d.versions.length === 0) return;
+    var versions = d.versions;
+    var def = versions.length - 1;   /* la plus recente par defaut */
+
+    if (select && versions.length > 1) {
+      versions.forEach(function(ver, i) {
+        var opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = labelOf(ver);
+        select.appendChild(opt);
+      });
+      select.value = String(def);
+      select.addEventListener('change', function() {
+        var ver = versions[parseInt(select.value, 10)] || versions[def];
+        loadInto(ver.audio_url);
+      });
+      if (picker) picker.style.display = 'block';
+    }
+
+    var titleEl = wrap.querySelector('.cm-title');
+    if (titleEl && versions[def].titre) titleEl.textContent = versions[def].titre;   /* titre (depuis les détails) affiché avec l'aperçu */
+    loadInto(versions[def].audio_url);
+  })
+  .catch(function() {});
+})();
+
+/* ── PERSONNALISATION NOM ───────────────────────────── */
+(function() {
+  var nom = (window._CM && window._CM.nom) ? window._CM.nom : '';
+
+  function nomHTML() {
+    return nom
+      ? '<strong>' + nom + '</strong>'
+      : 'cette personne';
+  }
+  function nomTexte() {
+    return nom ? nom : 'cette personne';
+  }
+
+  if (!nom) return; /* fallback générique déjà en place */
+
+  /* Hero title */
+  var heroTitle = document.getElementById('cm-hero-title');
+  if (heroTitle) heroTitle.innerHTML = 'Voici la chanson composée pour ' + nomHTML();
+
+  /* Value list item 1 */
+  var valNom = document.getElementById('cm-value-nom');
+  if (valNom) valNom.innerHTML = 'Une chanson originale, composée uniquement pour ' + nomHTML();
+
+  /* Garantie title */
+  var garantie = document.getElementById('cm-guarantee-title');
+  if (garantie) garantie.innerHTML = 'Révisée jusqu\'à ce qu\'elle ressemble vraiment à <strong>' + nom + '</strong>';
+
+  /* CTA bas */
+  var ctaPre = document.getElementById('cm-cta-pre');
+  if (ctaPre) ctaPre.innerHTML = '<strong>' + nom + '</strong> mérite une chanson qui lui ressemble.';
+
+  /* Sticky dock — ajouter le prénom */
+  var stickyBtn = document.getElementById('stripeBtnSticky');
+  if (stickyBtn) stickyBtn.textContent = 'Obtenir la chanson de ' + nom;
+})();
+
+/* ── STRIPE — session Checkout serveur (version choisie) ──────────────
+   Remplace le Payment Link. Crée la session via /api/creer-checkout (prix fixé serveur,
+   version en metadata) puis redirige vers session.url. Un menu près du bouton choisit la version. */
+(function() {
+  var token = (window._CM && window._CM.id)    || '';
+  var busy = false;
+  var cachedVersions = null;   /* versions chargées une fois (réutilisées par le popup d'achat) */
+
+  /* Charge les versions une fois (réutilisé par le popup de confirmation). */
+  function loadVersions() {
+    if (cachedVersions) return Promise.resolve(cachedVersions);
+    if (!token) return Promise.resolve([]);
+    return fetch('/api/lire-versions', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: token }) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ cachedVersions = (d && Array.isArray(d.versions)) ? d.versions : []; return cachedVersions; })
+      .catch(function(){ return []; });
+  }
+  if (token) loadVersions();   /* préchauffe au chargement */
+
+  /* Lance la session Stripe pour une version précise. */
+  function startCheckout(genNo, bumps) {
+    if (!genNo) { busy = false; alert("Le paiement n'a pas pu démarrer. Réessayez dans un instant."); return; }
+    fetch('/api/creer-checkout', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: token, generation_no: genNo, bumps: bumps || [] })
+    })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if (d && d.url) { window.location.href = d.url; return; }   /* → Stripe Checkout */
+      busy = false; alert("Le paiement n'a pas pu démarrer. Réessayez dans un instant.");
+    })
+    .catch(function(){ busy = false; alert("Le paiement n'a pas pu démarrer. Réessayez dans un instant."); });
+  }
+
+  /* Popup de confirmation : version (si >1) + order bumps optionnels → 1 seul checkout. */
+  var buyOverlay = document.getElementById('cm-buy-overlay');
+  var buyOptions = document.getElementById('cm-buy-options');
+  var buyBumps   = document.getElementById('cm-buy-bumps');
+  var buyProceed = document.getElementById('cm-buy-proceed');
+  var buyClose   = document.getElementById('cm-buy-close');
+  var selectedGen = null;
+
+  /* Order bumps proposés. Le produit principal reste le héros : ceux-ci sont optionnels, décochés, en dessous. */
+  var BUMPS = [
+    { key:'instrumental',     label:'Version instrumentale',     price:'15,99 $', desc:'La trame musicale seule, sans voix.' },
+    { key:'paroles_vivantes', label:'Paroles karaoké', price:'13,99 $', desc:'La musique avec les paroles à l\'écran.' }
+  ];
+
+  function closeBuy(){ if (buyOverlay) { buyOverlay.classList.remove('show'); buyOverlay.setAttribute('aria-hidden','true'); } busy = false; }
+  if (buyClose)   buyClose.addEventListener('click', closeBuy);
+  if (buyOverlay) buyOverlay.addEventListener('click', function(e){ if (e.target === buyOverlay) closeBuy(); });
+
+  function openBuy(versions) {
+    if (!buyOverlay) { startCheckout(versions[versions.length - 1].generation_no, []); return; }
+    selectedGen = versions[versions.length - 1].generation_no;   /* défaut : dernière version */
+
+    /* Versions (sélection) — affichées seulement s'il y en a plus d'une. */
+    buyOptions.innerHTML = '';
+    if (versions.length > 1) {
+      versions.forEach(function(ver){
+        var bits = [ver.style, ver.ambiance].filter(Boolean);
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'cm-ver-opt';
+        b.textContent = 'V' + ver.v + (bits.length ? ' · ' + bits.join(' · ') : '');
+        if (ver.generation_no === selectedGen) b.classList.add('selected');
+        b.addEventListener('click', function(){
+          selectedGen = ver.generation_no;
+          [].forEach.call(buyOptions.children, function(c){ c.classList.remove('selected'); });
+          b.classList.add('selected');
+        });
+        buyOptions.appendChild(b);
+      });
+    }
+
+    /* Order bumps (optionnels, décochés). */
+    buyBumps.innerHTML = '';
+    var t = document.createElement('div'); t.className = 'cm-buy-bumps-title';
+    t.textContent = 'Ajoute à ta commande (optionnel)';
+    buyBumps.appendChild(t);
+    BUMPS.forEach(function(bp){
+      var lbl = document.createElement('label'); lbl.className = 'cm-bump';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = bp.key;
+      var span = document.createElement('span');
+      span.innerHTML = bp.label + ' · +' + bp.price + '<small>' + bp.desc + '</small>';
+      lbl.appendChild(cb); lbl.appendChild(span);
+      buyBumps.appendChild(lbl);
+    });
+
+    buyOverlay.classList.add('show'); buyOverlay.setAttribute('aria-hidden','false');
+  }
+
+  if (buyProceed) buyProceed.addEventListener('click', function(){
+    var bumps = [].map.call(buyBumps.querySelectorAll('input:checked'), function(cb){ return cb.value; });
+    buyOverlay.classList.remove('show'); buyOverlay.setAttribute('aria-hidden','true');
+    startCheckout(selectedGen, bumps);
+  });
+
+  function goStripe() {
+    if (busy || !token) return;               /* aperçu legacy sans token : pas d'achat serveur */
+    busy = true;
+    if (window._cmFunnel) window._cmFunnel('checkout_started');   /* intention d'achat */
+    loadVersions().then(function(versions){
+      if (!versions || !versions.length) { busy = false; alert("Le paiement n'a pas pu démarrer. Réessayez dans un instant."); return; }
+      openBuy(versions);   /* toujours : confirmation version + bumps → 1 seul checkout */
+    });
+  }
+
+  ['stripeBtnPricing', 'stripeBtnBottom', 'stripeBtnSticky'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', goStripe);
+  });
+})();
+
+/* ── RÉGÉNÉRER : 2 actions ───────────────────────────
+   (1) « Essayer un autre style » → popup in-page (style/voix/ambiance + souvenir optionnel),
+       MÊME personne / même projet. Sans nouveau souvenir : nouvelle chanson directe (mêmes
+       paroles, nouvelle musique). Avec souvenir : on réécrit d'abord les paroles → /revision.
+   (2) « Créer une chanson pour quelqu'un d'autre » → nouveau survey, NOUVEAU projet/token.
+   Plafond enforced SERVEUR (MAKE C-gen) ; ici, UX seulement. */
+(function() {
+  var token = (window._CM && window._CM.id) || '';
+  if (!token) return;                 /* aperçu legacy → on n'affiche rien */
+  var anchor = document.getElementById('cm-pricing-root');
+  if (!anchor) return;
+
+  /* Options EXACTES du survey (doivent matcher les single-selects Airtable). */
+  var STYLES = ['Pop','Country','R&B','Rock','Jazz','Acoustique','Douce Mélodie','Orchestre Gospel','Hip-Hop','Cinématographique','Latin / Salsa','Reggae','Électronique / Dance'];
+  var MOODS  = ['Émotionnelle','Tendre','Paisible','Inspirante','Reconnaissante','Festive','Optimiste','Mélancolique'];
+  var VOICES = ['Masculin','Féminin'];
+  var C_GEN_WEBHOOK = 'TON_WEBHOOK_MAKE_C_CPT';
+
+  /* Les 2 boutons, sous le bloc pricing. */
+  var actions = document.createElement('div');
+  actions.className = 'cm-regen-actions';
+  var b1 = document.createElement('button');
+  b1.type = 'button'; b1.className = 'cm-regen-btn'; b1.textContent = 'Essayer un autre style';
+  var b2 = document.createElement('button');
+  b2.type = 'button'; b2.className = 'cm-regen-btn cm-regen-btn-sec';
+  b2.textContent = "Créer une chanson pour quelqu'un d'autre";
+  var note = document.createElement('p');
+  note.className = 'cm-regen-note';
+  note.textContent = "Ajuste le style, la voix ou l'ambiance, ou bonifie un souvenir.";
+  actions.appendChild(b1); actions.appendChild(b2); actions.appendChild(note);
+  anchor.parentNode.insertBefore(actions, anchor.nextSibling);
+
+  /* Modal. */
+  var overlay  = document.getElementById('cm-style-overlay');
+  var selMus   = document.getElementById('cm-style-musique');
+  var selVoix  = document.getElementById('cm-style-voix');
+  var selAmb   = document.getElementById('cm-style-ambiance');
+  var taSouv   = document.getElementById('cm-style-souvenirs');
+  var statusEl = document.getElementById('cm-style-status');
+  var btnConf  = document.getElementById('cm-style-confirm');
+
+  function fill(sel, arr) { arr.forEach(function(v){ var o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); }); }
+  if (selMus)  fill(selMus, STYLES);
+  if (selVoix) fill(selVoix, VOICES);
+  if (selAmb)  fill(selAmb, MOODS);
+
+  function setStatus(t){ if (statusEl) statusEl.textContent = t || ''; }
+  function openModal(){
+    if (!overlay) return;
+    setStatus(''); if (btnConf) btnConf.disabled = false;
+    var _f=document.getElementById('cm-style-form'); if(_f) _f.style.display='';
+    var _c=document.getElementById('cm-cap-help'); if(_c) _c.style.display='none';
+    overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
+    /* Pré-sélectionne les valeurs actuelles (lire-survey, lecture seule minimisée). */
+    fetch('/api/lire-survey', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: token }) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if(!d) return;
+        if (d.style_musical && selMus)  selMus.value  = d.style_musical;
+        if (d.voix          && selVoix) selVoix.value = d.voix;
+        if (d.ambiance      && selAmb)  selAmb.value  = d.ambiance;
+      })
+      .catch(function(){});
+  }
+  function closeModal(){ if(!overlay) return; overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); }
+
+  b1.addEventListener('click', openModal);
+  b2.addEventListener('click', function(){
+    var ok = window.confirm("Créer une chanson pour une autre personne ? Tu recommenceras un nouveau formulaire. Tes versions actuelles restent accessibles par le lien que tu as reçu.");
+    if (ok) window.location.href = '/souvenirs';
+  });
+
+  var closeBtn  = document.getElementById('cm-style-close');
+  var cancelBtn = document.getElementById('cm-style-cancel');
+  if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  if (overlay)   overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+
+  if (btnConf) btnConf.addEventListener('click', function(){
+    var music_style = selMus ? selMus.value : '';
+    var voice       = selVoix ? selVoix.value : '';
+    var mood        = selAmb ? selAmb.value : '';
+    var souvenirs   = (taSouv && taSouv.value || '').trim();
+    btnConf.disabled = true; setStatus('Un instant…');
+
+    /* 1. Applique le style choisi sur le Project (relu ensuite par C-gen). */
+    fetch('/api/essayer-style', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: token, music_style: music_style, mood: mood, voice: voice })
+    })
+    .then(function(rS){ if (!rS.ok) throw new Error('style');
+      if (souvenirs) {
+        /* 2a. Nouveau souvenir → réécrit les paroles (différentes) → /revision pour accepter. */
+        return fetch('/api/generate-lyrics', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ mode:'regenerate', token: token, modifications: souvenirs })
+        }).then(function(rL){ return rL.json().then(function(dL){
+          if (!rL.ok || !dL || !dL.paroles) throw new Error('lyrics');
+          window.location.href = '/revision?id=' + encodeURIComponent(token);
+        }); });
+      }
+      /* 2b. Sans nouveau souvenir → nouvelle chanson directe (mêmes paroles, nouvelle musique). */
+      return fetch(C_GEN_WEBHOOK, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ token: token, mode:'song', post_purchase:false })
+      }).then(function(rG){ return rG.json().catch(function(){ return {}; }).then(function(dG){
+        if (dG && dG.status === 'plafond') {
+          showCapHelp(dG.message); return;
+        }
+        window.location.href = '/attente-chanson?id=' + encodeURIComponent(token);
+      }); });
+    })
+    .catch(function(){ setStatus("Un souci est survenu. Réessayez dans un instant."); btnConf.disabled = false; });
+  });
+
+  /* ── Popup au cap (plafond serveur atteint) : message chaleureux + box courriel + alerte ── */
+  function showCapHelp(msg){
+    setStatus('');
+    var f=document.getElementById('cm-style-form'); if(f) f.style.display='none';
+    if (msg){ var m=document.getElementById('cm-cap-msg'); if(m) m.textContent=msg; }
+    var c=document.getElementById('cm-cap-help'); if(c) c.style.display='block';
+  }
+  var capSend=document.getElementById('cm-cap-send'), capEmail=document.getElementById('cm-cap-email'), capStatus=document.getElementById('cm-cap-status');
+  if (capSend) capSend.addEventListener('click', function(){
+    var email=(capEmail && capEmail.value || '').trim();
+    if (!email || email.indexOf('@') < 1){ if(capStatus) capStatus.textContent='Entrez un courriel valide.'; return; }
+    capSend.disabled=true; if(capStatus) capStatus.textContent='Un instant…';
+    fetch('/api/aide-plafond', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: token, email: email }) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(res){
+        if (res && res.ok){ if(capEmail) capEmail.style.display='none'; capSend.style.display='none'; if(capStatus) capStatus.textContent='Merci ✓ On t’écrit très bientôt pour t’aider à créer ta version.'; }
+        else { capSend.disabled=false; if(capStatus) capStatus.textContent='Un souci est survenu. Réessayez.'; }
+      })
+      .catch(function(){ capSend.disabled=false; if(capStatus) capStatus.textContent='Un souci est survenu. Réessayez.'; });
+  });
+})();
+
+/* ── FAQ accordion ──────────────────────────────────── */
+document.querySelectorAll('.cm-faq-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var item = btn.closest('.cm-faq-item');
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.cm-faq-item.open').forEach(function(i){ i.classList.remove('open'); });
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+/* ── STICKY dock ────────────────────────────────────── */
+(function() {
+  var dock = document.getElementById('cmSticky');
+  document.body.style.paddingBottom = '84px';
+  function toggle() {
+    if (window.scrollY > 400) { dock.classList.add('show'); dock.setAttribute('aria-hidden','false'); }
+    else { dock.classList.remove('show'); dock.setAttribute('aria-hidden','true'); }
+  }
+  window.addEventListener('scroll', toggle, {passive: true});
+  toggle();
+})();
+</script>
+
+</body>
+</html>
