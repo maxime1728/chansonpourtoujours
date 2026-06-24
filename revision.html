@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Tes paroles · Chanson Pour Toujours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@600;700&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:#FBF3E9; --cream2:#F5E8D6; --blush:#F2DBC8;
+      --wine:#5A1A3C; --wine2:#3D0F28; --plum:#7C2A55;
+      --coral:#EF5638; --coral2:#FF7A5C;
+      --gold:#E6A23C; --gold2:#F6CE7C; --gold3:#C9882B;
+      --ink:#2B1622; --mute:#7A5C6A; --line:#ECD9C8; --line2:#E2C8B0; --blanc:#FFFFFF;
+      --ff-d:"Fraunces",Georgia,serif; --ff-h:"Caveat",cursive; --ff-s:"Mulish",system-ui,sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background:var(--cream); color:var(--ink); font-family:var(--ff-s); font-size:15px; line-height:1.6; min-height:100vh; }
+    header { background:var(--blanc); border-bottom:1px solid var(--line); padding:20px 24px; display:flex; align-items:center; gap:12px; }
+    .logo-mark { width:32px; height:32px; background:var(--coral); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .logo-mark svg { width:16px; height:16px; fill:white; }
+    .logo-text { font-family:var(--ff-d); font-weight:500; font-size:18px; color:var(--wine); letter-spacing:0.01em; }
+    .etapes { background:var(--blanc); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:12px; color:var(--mute); letter-spacing:0.05em; }
+    .etape { display:flex; align-items:center; gap:6px; opacity:0.45; }
+    .etape.active { opacity:1; color:var(--coral); font-weight:700; }
+    .etape.done { opacity:0.7; }
+    .etape-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .etape-sep { color:var(--line2); font-size:14px; }
+    main { max-width:720px; margin:0 auto; padding:48px 24px 80px; }
+    #etat-chargement { text-align:center; padding:80px 0; }
+    .spinner { width:48px; height:48px; border:2px solid var(--blush); border-top-color:var(--coral); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 28px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .chargement-titre { font-family:var(--ff-d); font-size:24px; font-weight:500; color:var(--wine); margin-bottom:10px; }
+    .chargement-sous { font-size:14px; color:var(--mute); font-weight:400; }
+    #etat-erreur { display:none; text-align:center; padding:60px 0; }
+    .erreur-icone { font-size:40px; margin-bottom:20px; }
+    .erreur-titre { font-family:var(--ff-d); font-size:22px; color:var(--wine); margin-bottom:10px; }
+    .erreur-msg { font-size:14px; color:var(--mute); margin-bottom:28px; }
+    .btn-reessayer { background:var(--coral); color:white; border:none; padding:12px 28px; border-radius:999px; font-family:var(--ff-s); font-weight:800; font-size:14px; cursor:pointer; }
+    .btn-reessayer:hover { background:#d94a2a; }
+    #contenu { display:none; }
+    .titre-chanson { font-family:var(--ff-s); font-weight:900; font-size:12px; color:var(--gold3); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; }
+    .intro-titre { font-family:var(--ff-d); font-size:34px; font-weight:500; color:var(--wine); line-height:1.25; margin-bottom:6px; }
+    .intro-titre em { font-style:italic; color:var(--coral); }
+    .intro-sous { font-size:14px; color:var(--mute); font-weight:400; margin-bottom:20px; line-height:1.7; }
+    /* Message d'importance */
+    .avis-important { background:rgba(230,162,60,0.10); border:1px solid rgba(230,162,60,0.35); border-radius:10px; padding:14px 18px; font-size:13.5px; color:var(--mute); line-height:1.6; margin-bottom:32px; }
+    .avis-important strong { color:var(--ink); font-weight:700; }
+    .carte-paroles { background:var(--blanc); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:36px; }
+    .carte-paroles-header { background:var(--blush); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line2); }
+    .carte-paroles-label { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--coral); font-weight:800; }
+    .nom-chanson { font-family:var(--ff-d); font-size:15px; font-style:italic; color:var(--mute); }
+    .paroles-texte { padding:28px 32px; font-family:var(--ff-d); font-size:17px; font-weight:400; line-height:1.9; color:var(--ink); white-space:pre-wrap; }
+    .lecture-seule-note { padding:10px 24px; font-size:11px; color:var(--mute); background:var(--cream); border-top:1px solid var(--line); font-style:italic; }
+    .section-modifs { background:var(--blanc); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:24px; }
+    .modifs-header { padding:20px 24px 0; }
+    .modifs-label { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold3); font-weight:800; margin-bottom:8px; }
+    .modifs-titre { font-family:var(--ff-d); font-size:22px; font-weight:500; color:var(--wine); margin-bottom:6px; }
+    .modifs-description { font-size:13.5px; color:var(--mute); font-weight:400; line-height:1.65; margin-bottom:20px; }
+    .modifs-exemples { background:var(--blush); border-top:1px solid var(--line2); border-bottom:1px solid var(--line2); padding:16px 24px; }
+    .exemples-titre { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--coral); font-weight:800; margin-bottom:12px; }
+    .exemples-liste { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    /* Pistes en bullet points texte (lecture seule, pas des boutons) */
+    .exemple-chip {
+      position:relative; padding-left:18px; font-size:13.5px; color:var(--mute);
+      line-height:1.5; white-space:normal; word-break:break-word;
+    }
+    .exemple-chip::before {
+      content:'•'; position:absolute; left:2px; top:0; color:var(--coral); font-size:15px; line-height:1.4;
+    }
+    .exemple-chip.vide { color:#C9B6A6; font-style:italic; }
+    .exemple-chip.vide::before { color:#C9B6A6; }
+    /* Ajustements rapides : 2 boutons fixes cliquables (injectent une consigne dans le champ) */
+    .modifs-rapides { padding:16px 24px 0; }
+    .rapides-boutons { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+    .chip-rapide {
+      background:var(--blush); color:var(--coral); border:1px solid var(--line2);
+      border-radius:999px; padding:9px 16px; font-family:var(--ff-s); font-size:13px;
+      font-weight:700; cursor:pointer; transition:background 0.18s, color 0.18s, transform 0.1s;
+    }
+    .chip-rapide:hover { background:var(--coral); color:#fff; border-color:var(--coral); }
+    .chip-rapide:active { transform:scale(0.97); }
+    .modifs-champ { padding:20px 24px; }
+    textarea#modifications { width:100%; min-height:120px; padding:16px; border:1.5px solid var(--line2); border-radius:8px; font-family:var(--ff-s); font-size:14px; color:var(--ink); background:var(--cream); resize:vertical; outline:none; line-height:1.6; }
+    textarea#modifications::placeholder { color:#C9B6A6; font-style:italic; }
+    textarea#modifications:focus { border-color:var(--coral); background:var(--blanc); }
+    .champ-hint { font-size:12px; color:var(--mute); margin-top:8px; font-weight:400; }
+    .btn-regen { width:100%; background:white; color:var(--coral); border:1.5px solid var(--coral); padding:14px 24px; border-radius:999px; font-family:var(--ff-s); font-size:15px; font-weight:800; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:4px; }
+    .btn-regen:hover { background:var(--blush); }
+    .btn-regen:disabled { opacity:0.5; cursor:not-allowed; }
+    .btn-confirmer { width:100%; background:var(--coral); color:white; border:none; padding:16px 24px; border-radius:999px; font-family:var(--ff-d); font-size:20px; font-weight:500; cursor:pointer; transition:background 0.2s, transform 0.1s; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 10px 26px rgba(239,86,56,.3); }
+    .btn-confirmer:hover { background:#d94a2a; }
+    .btn-confirmer:active { transform:scale(0.99); }
+    .btn-sous-note { text-align:center; font-size:12px; color:var(--mute); margin-top:10px; margin-bottom:8px; font-weight:400; }
+    /* POPUP */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(44,22,34,0.55); z-index:50; align-items:center; justify-content:center; padding:20px; }
+    .overlay.show { display:flex; }
+    .popup { background:var(--blanc); border-radius:16px; max-width:420px; width:100%; padding:32px 28px; text-align:center; box-shadow:0 20px 60px rgba(44,22,34,0.3); }
+    .popup-titre { font-family:var(--ff-d); font-size:26px; font-weight:500; color:var(--wine); margin-bottom:12px; }
+    .popup-texte { font-size:14px; color:var(--mute); line-height:1.7; margin-bottom:26px; }
+    .popup-texte strong { color:var(--ink); }
+    .popup-actions { display:flex; flex-direction:column; gap:10px; }
+    .popup-oui { background:var(--coral); color:white; border:none; padding:15px; border-radius:999px; font-family:var(--ff-s); font-size:15px; font-weight:800; cursor:pointer; }
+    .popup-oui:hover { background:#d94a2a; }
+    .popup-non { background:none; color:var(--mute); border:1px solid var(--line2); padding:13px; border-radius:999px; font-family:var(--ff-s); font-size:14px; cursor:pointer; }
+    .popup-non:hover { border-color:var(--coral); color:var(--coral); }
+    #etat-soumission { display:none; text-align:center; padding:60px 0; }
+    .soumission-icone { width:64px; height:64px; background:var(--blush); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .soumission-icone svg { width:28px; height:28px; stroke:var(--coral); }
+    .soumission-titre { font-family:var(--ff-d); font-size:28px; font-weight:500; color:var(--wine); margin-bottom:10px; }
+    .soumission-sous { font-size:14px; color:var(--mute); font-weight:400; line-height:1.7; max-width:400px; margin:0 auto; }
+    /* overlay régénération en cours, par-dessus les paroles */
+    .regen-overlay { display:none; text-align:center; padding:40px 0; }
+    .regen-overlay.show { display:block; }
+    @media (max-width:600px) { main { padding:32px 16px 60px; } .intro-titre { font-size:26px; } .paroles-texte { padding:20px; font-size:15px; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+    <span class="logo-text">Chanson Pour Toujours</span>
+  </header>
+
+  <div class="etapes">
+    <div class="etape done"><div class="etape-dot"></div> Tes souvenirs</div>
+    <div class="etape-sep">›</div>
+    <div class="etape active"><div class="etape-dot"></div> Tes paroles</div>
+    <div class="etape-sep">›</div>
+    <div class="etape"><div class="etape-dot"></div> Création</div>
+  </div>
+
+  <main>
+    <!-- CHARGEMENT / ATTENTE (polling) -->
+    <div id="etat-chargement">
+      <div class="spinner"></div>
+      <div class="chargement-titre">On compose tes paroles…</div>
+      <div class="chargement-sous">Cela prend généralement moins d'une minute.<br>Cette page se mettra à jour automatiquement.</div>
+    </div>
+
+    <!-- ERREUR -->
+    <div id="etat-erreur">
+      <div class="erreur-icone">✦</div>
+      <div class="erreur-titre">Un petit pépin</div>
+      <div class="erreur-msg" id="erreur-detail">Une erreur inattendue est survenue.</div>
+      <button class="btn-reessayer" onclick="reessayer()">Réessayer</button>
+    </div>
+
+    <!-- CONTENU -->
+    <div id="contenu">
+      <div class="titre-chanson">Tes paroles personnalisées</div>
+      <h1 class="intro-titre">Voici <em id="titre-chanson-affiche"></em></h1>
+      <p class="intro-sous">Prends le temps de relire ces paroles attentivement.</p>
+
+      <div class="avis-important">
+        <strong>Ces paroles façonneront ta chanson.</strong> Tu peux les ajuster autant de fois que nécessaire ici. Une fois la chanson créée, des ajustements restent possibles, mais plus limités, c'est donc le meilleur moment pour tout perfectionner.
+      </div>
+
+      <!-- PAROLES (lecture seule) -->
+      <div class="carte-paroles">
+        <div class="carte-paroles-header">
+          <span class="carte-paroles-label">Paroles générées</span>
+          <span class="nom-chanson" id="nom-chanson-header"></span>
+        </div>
+        <div class="paroles-texte" id="paroles-affichees"></div>
+        <div class="lecture-seule-note">Pour modifier, décris tes changements dans l'encadré ci-dessous : les paroles seront réécrites selon tes demandes.</div>
+      </div>
+
+      <!-- MODIFICATIONS -->
+      <div class="section-modifs">
+        <div class="modifs-header">
+          <div class="modifs-label">Tes retours</div>
+          <h2 class="modifs-titre">Souhaites-tu ajuster quelque chose ?</h2>
+          <p class="modifs-description">Décris ce que tu aimerais ajouter, retirer ou reformuler. Les nouvelles paroles garderont tout ce qui fonctionne et n'appliqueront que tes changements.</p>
+        </div>
+        <div class="modifs-exemples">
+          <div class="exemples-titre">Quelques pistes, inspirées de tes réponses</div>
+          <ul class="exemples-liste" id="liste-suggestions">
+            <li class="exemple-chip vide">Les suggestions apparaîtront ici…</li>
+          </ul>
+        </div>
+        <div class="modifs-rapides">
+          <div class="exemples-titre">Ajustements rapides</div>
+          <div class="rapides-boutons">
+            <button type="button" class="chip-rapide" onclick="ajustementRapide('allonger')">＋ Allonger les paroles</button>
+            <button type="button" class="chip-rapide" onclick="ajustementRapide('raccourcir')">－ Raccourcir les paroles</button>
+          </div>
+        </div>
+        <div class="modifs-champ">
+          <textarea id="modifications" placeholder="Ex. : Insister sur notre voyage en Italie. Garder le refrain tel quel…"></textarea>
+          <div class="champ-hint">Sois aussi précis que possible : chaque détail aide à personnaliser davantage.</div>
+        </div>
+        <div class="modifs-champ" style="padding-top:0;">
+          <button class="btn-regen" id="btn-regen" onclick="regenerer()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            Régénérer mes paroles
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-confirmer" id="btn-confirmer" onclick="ouvrirPopup()">
+        Ces paroles sont parfaites
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="btn-sous-note">La création de la chanson démarrera à partir de ces paroles.</div>
+    </div>
+
+    <!-- SOUMISSION CONFIRMÉE -->
+    <div id="etat-soumission">
+      <div class="soumission-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <div class="soumission-titre">Merci. Ta chanson est en création.</div>
+      <div class="soumission-sous">Tu seras redirigé dans un instant vers la page de suivi.</div>
+    </div>
+  </main>
+
+  <!-- POPUP DE CONFIRMATION -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <div class="popup-titre">Confirmer ces paroles ?</div>
+      <div class="popup-texte">Ta chanson sera créée à partir de <strong>ces paroles exactes</strong>. Après cette étape, les ajustements deviennent plus limités. Es-tu prêt·e à continuer ?</div>
+      <div class="popup-actions">
+        <button class="popup-oui" onclick="confirmerProd()">Oui, créer ma chanson</button>
+        <button class="popup-non" onclick="fermerPopup()">Pas encore, je veux relire</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    /* ── CONFIG ──
+       TODO Lot 6 : brancher le vrai webhook Make B CPT (Suno) et les endpoints /api CPT. */
+    const URL_ATTENTE     = '/attente-chanson';
+    const WEBHOOK_MAKE_B  = 'TON_WEBHOOK_MAKE_B_CPT';   /* placeholder : webhook Make B (generation chanson) du sous-compte CPT */
+
+    const token = new URLSearchParams(location.search).get('id');
+
+    /* ── Polling + auto-relance (chargement initial) ──
+       Fenetre de 2 min. Voie normale : MAKE A ecrit les paroles puis on sonde.
+       Si rien apres le delai de grace, on relance generate-lyrics en arriere-plan. */
+    const POLL_INTERVAL = 5000;
+    const BUDGET_MS     = 120000;  /* 2 minutes : fenetre totale avant le message manuel */
+    const GRACE_MS      = 30000;   /* ~30s : on laisse MAKE A finir avant de relancer en backend */
+    const STATUTS_PRETS = ['lyrics_generated', 'audio_generated', 'validated'];
+    let pollTimer = null, fini = false, debut = 0;
+
+    function el(id){ return document.getElementById(id); }
+    function setTexte(id,t){ var n=el(id); if(n) n.textContent=t; }
+    function montrer(id){
+      ['etat-chargement','etat-erreur','contenu','etat-soumission'].forEach(function(i){
+        var n=el(i); if(n) n.style.display=(i===id?'block':'none');
+      });
+    }
+
+    /* ── Affichage paroles + suggestions ── */
+    function rendreSuggestions(sugg){
+      var ul = el('liste-suggestions');
+      if(!ul) return;
+      var bloc = ul.closest('.modifs-exemples');
+      ul.innerHTML = '';
+      var arr = [];
+      try { arr = (typeof sugg === 'string') ? JSON.parse(sugg||'[]') : (sugg||[]); } catch(e){ arr = []; }
+      if(!arr.length){
+        if(bloc) bloc.style.display = 'none';
+        return;
+      }
+      if(bloc) bloc.style.display = '';
+      arr.forEach(function(s){
+        var li=document.createElement('li');
+        li.className='exemple-chip';
+        li.textContent=s;
+        ul.appendChild(li);
+      });
+    }
+
+    function ajouterSuggestion(texte){
+      var ta=el('modifications'); if(!ta) return;
+      ta.value = ta.value ? ta.value+'\n'+texte : texte;
+      ta.focus();
+    }
+
+    /* ── Ajustements rapides : 2 consignes fixes injectees dans le champ ── */
+    var PHRASES_RAPIDES = {
+      allonger:   'Allonger un peu les paroles (ajouter un couplet), en gardant le meme ton et la meme structure.',
+      raccourcir: 'Raccourcir un peu les paroles, en gardant les passages les plus forts.'
+    };
+    function ajustementRapide(cle){
+      var texte = PHRASES_RAPIDES[cle]; if(!texte) return;
+      var ta = el('modifications');
+      if(ta && ta.value.indexOf(texte) !== -1){ ta.focus(); return; }
+      ajouterSuggestion(texte);
+    }
+
+    function afficher(d){
+      setTexte('titre-chanson-affiche', d.titre || 'ta chanson');
+      setTexte('nom-chanson-header',   d.titre || '');
+      setTexte('paroles-affichees',    d.paroles || '');
+      rendreSuggestions(d.suggestions);
+      montrer('contenu');
+    }
+
+    function afficherAttenteLongue(){
+      setTexte('erreur-detail', "La creation a pris plus de temps que prevu, ca arrive rarement. Clique « Reessayer » pour relancer (c'est generalement instantane).");
+      montrer('etat-erreur');
+    }
+    /* Paroles non generables (reponses trop minces) : message utile + Reessayer relance la generation. */
+    function afficherInputInsuffisant(){
+      setTexte('erreur-detail', "Les reponses fournies etaient un peu courtes pour composer la chanson. Clique « Reessayer » pour relancer, ou recommence le formulaire en ajoutant un souvenir ou ce qui rend la personne speciale.");
+      montrer('etat-erreur');
+    }
+    function arreterPolling(){ fini=true; if(pollTimer){ clearTimeout(pollTimer); pollTimer=null; } }
+
+    /* ── RESSAYER : UNE relance reelle (regenere depuis les reponses stockees), pas une boucle ── */
+    async function reessayer(){
+      var btn = document.querySelector('.btn-reessayer');
+      if(btn){ btn.disabled = true; btn.textContent = 'Un instant…'; }
+      setTexte('erreur-detail', 'On relance la creation de tes paroles…');
+      try {
+        var res = await fetch('/api/generate-lyrics', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ mode:'retry', token: token })
+        });
+        var d = await res.json();
+        if(res.ok && d && d.paroles){ arreterPolling(); afficher(d); return; }
+        throw new Error('retry');
+      } catch(e){
+        setTexte('erreur-detail', "La creation n'a pas pu aboutir cette fois. Reessaie dans un instant. Si ca persiste, contacte-nous et on regle ca avec toi tout de suite.");
+        if(btn){ btn.disabled = false; btn.textContent = 'Reessayer'; }
+      }
+    }
+
+    function terminer(suite){ fini=true; if(pollTimer){ clearTimeout(pollTimer); pollTimer=null; } if(suite) suite(); }
+
+    /* Relance la creation des paroles EN BACKEND (mode retry, anti-doublon cote serveur). */
+    async function relancerParoles(){
+      try {
+        var res = await fetch('/api/generate-lyrics', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ mode:'retry', token: token })
+        });
+        var d = {}; try { d = await res.json(); } catch(e){}
+        return { ok: res.ok, status: res.status, data: d, paroles: d && d.paroles };
+      } catch(e){ return { ok:false, status:0, data:null, paroles:null }; }
+    }
+
+    async function boucle(){
+      if(fini) return;
+      var ecoule = Date.now() - debut;
+
+      if(ecoule < GRACE_MS){
+        try {
+          var res = await fetch('/api/lire-projet',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token})});
+          var d = await res.json();
+          if(!fini && res.ok && STATUTS_PRETS.indexOf(d.statut)!==-1 && d.paroles){
+            if(String(d.paroles).indexOf('invalid_input')!==-1) return terminer(afficherInputInsuffisant);
+            return terminer(function(){ afficher(d); });
+          }
+        } catch(e){}
+      } else {
+        var r = await relancerParoles();
+        if(fini) return;
+        if(r.ok && r.paroles) return terminer(function(){ afficher(r.data); });
+        if(r.status === 422)  return terminer(afficherInputInsuffisant);
+      }
+
+      if(Date.now() - debut >= BUDGET_MS) return terminer(afficherAttenteLongue);
+      pollTimer = setTimeout(boucle, POLL_INTERVAL);
+    }
+
+    /* ── REGENERATION : boucle sur place ── */
+    async function regenerer(){
+      var modifs=(el('modifications').value||'').trim();
+      if(!modifs){
+        el('modifications').focus();
+        el('modifications').style.borderColor='#c0392b';
+        setTimeout(function(){ el('modifications').style.borderColor=''; }, 1500);
+        return;
+      }
+      var btn=el('btn-regen');
+      btn.disabled=true;
+      btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M22 12a10 10 0 0 1-10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg> Reecriture en cours…';
+
+      try {
+        var res=await fetch('/api/generate-lyrics',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ mode:'regenerate', token:token, modifications:modifs })
+        });
+        var d=await res.json();
+        if(res.ok && d.paroles){
+          afficher(d);
+          el('modifications').value='';
+          window.scrollTo({top:0,behavior:'smooth'});
+        } else {
+          alert("La reecriture n'a pas pu aboutir. Reformule tes changements.");
+        }
+      } catch(e){
+        alert("Une erreur est survenue. Reessaie.");
+      }
+      btn.disabled=false;
+      btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> Regenerer mes paroles';
+    }
+
+    /* ── POPUP CONFIRMATION ── */
+    function ouvrirPopup(){ el('overlay').classList.add('show'); }
+    function fermerPopup(){ el('overlay').classList.remove('show'); }
+
+    /* ── CONFIRMER → PROD (Make B → Suno) ── */
+    async function confirmerProd(){
+      fermerPopup();
+      try {
+        var res = await fetch(WEBHOOK_MAKE_B,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ token:token, sans_modification:true, mode:'song', post_purchase:false })
+        });
+        var data = {};
+        try { data = await res.json(); } catch(e){}
+        if(data && data.status === 'plafond'){
+          setTexte('erreur-detail', data.message || "Tu as atteint la limite de regenerations. Ecris-nous et on t'aidera avec plaisir.");
+          montrer('etat-erreur');
+          return;
+        }
+      } catch(e){ console.error('Webhook B error:', e); }
+      montrer('etat-soumission');
+      setTimeout(function(){ window.location.href=URL_ATTENTE+'?id='+encodeURIComponent(token); }, 2500);
+    }
+
+    /* expose pour les onclick inline */
+    window.regenerer=regenerer; window.ouvrirPopup=ouvrirPopup; window.fermerPopup=fermerPopup; window.confirmerProd=confirmerProd;
+    window.ajustementRapide=ajustementRapide; window.reessayer=reessayer;
+
+    /* ── INIT ── */
+    var isDemo = new URLSearchParams(location.search).has('demo');
+    if(isDemo){
+      /* Apercu local sans backend : ?demo=1 injecte un exemple de paroles. */
+      afficher({
+        titre: "Pour toujours, Roxanne",
+        paroles: "Le jour où je t'ai vue, tout a changé\nTon sourire a écrit le reste de ma vie\nRoxanne, mon refuge, ma lumière du matin\n\n[Refrain]\nEt je te le chante, encore et encore\nPour toujours c'est toi, c'est nous, c'est sûr\nChaque jour à tes côtés vaut tous les trésors\n\nNos voyages, nos rires, notre petit café\nLes années passent et mon amour ne fait que grandir",
+        suggestions: ["Insister sur votre voyage en Italie", "Ajouter une mention de son rire", "Rendre le refrain plus entraînant"]
+      });
+    } else if(!token){
+      setTexte('erreur-detail', "Lien invalide ou expire. Recommence depuis le debut.");
+      montrer('etat-erreur');
+    } else {
+      montrer('etat-chargement');
+      debut = Date.now();
+      boucle();
+    }
+  </script>
+</body>
+</html>
