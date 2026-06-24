@@ -1,0 +1,33 @@
+[build]
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # CLOUDINARY_CLOUD_NAME = nom public Cloudinary (dans les URLs d'assets). Pas un secret :
+  # on l'exclut du scanner de secrets Netlify, qui sinon ferait echouer le build.
+  SECRETS_SCAN_OMIT_KEYS = "CLOUDINARY_CLOUD_NAME"
+
+# Routage des appels front /api/* vers les Netlify functions (branchees au lot backend CPT).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Anciens slugs legaux (style funnel) -> pages propres CPT.
+[[redirects]]
+  from = "/conditions-dutilisation-page"
+  to = "/condition-de-vente"
+  status = 301
+
+[[redirects]]
+  from = "/politique-de-confidentialite-page"
+  to = "/politique-de-confidentialite"
+  status = 301
+
+[[redirects]]
+  from = "/politique-de-remboursement-page"
+  to = "/politique-de-remboursement"
+  status = 301
+
+# NOTE (lot backend) : ajouter ici les crons quand les Netlify functions CPT existeront
+# (ex. nurture-cron, sentinelle-cron, alerte-cron, cover-cron, envoyer-cron, sequences-cron).
