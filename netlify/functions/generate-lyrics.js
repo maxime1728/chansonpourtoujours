@@ -284,7 +284,7 @@ exports.handler = async (event) => {
 - Shared memories: ${p.memories || ''}
 - What we want to keep and pass on: ${p.special_phrase || ''}`;
 
-      const sysCreate = (p.song_type === 'cadeau') ? systemCreateGift(langOf(p.language)) : systemCreate(langOf(p.language));
+      const sysCreate = systemCreateGift(langOf(p.language));
       const r = await callAnthropic(sysCreate, userPrompt, apiKey);
       if (!r.ok) return { statusCode: 502, body: JSON.stringify({ error: 'Erreur de génération' }) };
       const parsed = parseModel(r.data);
@@ -353,7 +353,7 @@ ${parolesActuelles}
 CLIENT'S REQUESTED CHANGES (apply ONLY these, keep the rest):
 ${modifications}`;
 
-      const r = await callAnthropic(systemRegenerate(langOf(p.language), p.song_type === 'cadeau'), userPrompt, apiKey);
+      const r = await callAnthropic(systemRegenerate(langOf(p.language), true), userPrompt, apiKey);
       if (!r.ok) return { statusCode: 502, body: JSON.stringify({ error: 'Erreur de génération' }) };
 
       const parsed = parseModel(r.data);
@@ -424,7 +424,7 @@ ${modifications}`;
 - What we want to keep and pass on: ${special_phrase}`;
 
   try {
-    const sysCreate = (d.song_type === 'cadeau') ? systemCreateGift(langOf(d.language)) : systemCreate(langOf(d.language));
+    const sysCreate = systemCreateGift(langOf(d.language));
     const r = await callAnthropic(sysCreate, userPrompt, apiKey);
     if (!r.ok) return { statusCode: 502, body: JSON.stringify({ error: 'Erreur de génération', anthropic_status: r.status, anthropic_detail: r.data }) };
 
