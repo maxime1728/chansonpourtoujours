@@ -1,0 +1,10 @@
+{
+  "name": "chansonpourtoujours-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dépendances des Netlify Functions de Chanson Pour Toujours. (Le reste du site = HTML/JS statique sans build.)",
+  "dependencies": {
+    "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.4"
+  }
+}
