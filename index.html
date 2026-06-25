@@ -1160,7 +1160,7 @@ h1.hero-h1 em{font-style:italic;color:var(--coral);}
   <p class="ft-email">Courriel : <a href="mailto:brigitte@chansonpourtoujours.ca">brigitte@chansonpourtoujours.ca</a></p>
   <nav aria-label="Liens légaux">
     <a href="/politique-de-confidentialite">Politique de confidentialité</a>
-    <a href="/condition-de-vente">Conditions d'utilisation</a>
+    <a href="/condition-de-vente">Conditions de vente</a>
     <a href="/politique-de-remboursement">Politique de remboursement</a>
   </nav>
   <p class="ft-copy">©2026 Chanson Pour Toujours, une marque de LabMarketing inc. Tous droits réservés.</p>
@@ -1304,7 +1304,7 @@ function reopenConsent(){
 function loadPixel(){
   if(window._px)return;window._px=true;
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init','TON_PIXEL_ID_CPT');fbq('track','PageView');
+  var _PX='TON_PIXEL_ID_CPT';if(_PX.indexOf('TON_PIXEL')!==0){fbq('init',_PX);fbq('track','PageView');}
 }
 
 /* ═══ FAQ ═══ */
