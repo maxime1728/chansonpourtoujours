@@ -15,7 +15,7 @@ function formulaLiteral(v) {
   return null;
 }
 
-const SYSTEM = `Tu écris de courtes phrases commémoratives en français QUÉBÉCOIS pour un signet (carte) en hommage à une personne décédée.
+const SYSTEM = `Tu écris de courtes phrases commémoratives en français QUÉBÉCOIS pour un signet (carte) pour une personne décédée.
 SOLUTION-FIRST — NON négociable : ne JAMAIS ouvrir sur le deuil, la perte ou la mort. Célébrer QUI était la personne et ce qui reste (une présence, une façon d'être, un souvenir vivant).
 TON : digne, sobre, chaleureux ; jamais larmoyant, jamais de clichés ("ange gardien", "étoile", "là-haut"), jamais d'imagerie religieuse.
 VÉRITÉ : utiliser UNIQUEMENT les détails fournis. Ne rien inventer (ni nom, ni lieu, ni fait).

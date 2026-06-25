@@ -79,7 +79,7 @@ async function sendCapi(evt, projet, clientEmail, ip, ua, token) {
   if (ip)    user_data.client_ip_address = ip;
   if (ua)    user_data.client_user_agent = ua;
   // Page source générique selon l'event — SANS token (token-safe).
-  const SRC = { preview_played: '/apercu', checkout_started: '/apercu', purchase: '/page-chanson', lead: '/souvenirs' };
+  const SRC = { preview_played: '/apercu', checkout_started: '/apercu', purchase: '/page-achat-revision', lead: '/souvenirs' };
   const data0 = {
     event_name:       CAPI_EVENT[evt],
     event_time:       Math.floor(Date.now() / 1000),

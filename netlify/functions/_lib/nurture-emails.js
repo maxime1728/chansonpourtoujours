@@ -34,7 +34,7 @@ function layout({ titre, corps, lien, cta, unsub, postal }) {
 // Retourne { subject, html } du courriel n (1..5). ctx = { prenom, lien, unsub, postal }.
 function build(n, ctx) {
   const prenom = esc(ctx.prenom || '');
-  const pour   = prenom ? ` en hommage à ${prenom}` : '';
+  const pour   = prenom ? ` pour ${prenom}` : '';
   const base   = { lien: ctx.lien, unsub: ctx.unsub, postal: ctx.postal };
 
   switch (n) {
@@ -63,7 +63,7 @@ function build(n, ctx) {
       subject: 'Une question ? Écrivez-nous',
       html: layout({ ...base,
         titre: 'On est là pour vous.',
-        corps: `Quelque chose vous retient ou n’est pas clair ? Répondez simplement à ce courriel — on vous accompagne avec plaisir pour finaliser votre hommage.`,
+        corps: `Quelque chose vous retient ou n’est pas clair ? Répondez simplement à ce courriel — on vous accompagne avec plaisir pour finaliser votre cadeau.`,
         cta: 'Voir ma chanson' })
     };
     default: return {
