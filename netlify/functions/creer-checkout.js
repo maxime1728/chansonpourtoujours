@@ -114,7 +114,7 @@ exports.handler = async (event) => {
       p.append('metadata[token]', token);
       p.append('metadata[generation_no]', String(generationNo));
       if (songId) p.append('metadata[song_id]', songId);
-      p.append('success_url', `${SITE}/page-chanson?id=${encodeURIComponent(token)}`);
+      p.append('success_url', `${SITE}/page-achat-revision?id=${encodeURIComponent(token)}`);
       p.append('cancel_url',  `${SITE}/apercu?id=${encodeURIComponent(token)}`);
       if (clientEmail && clientEmail.includes('@')) p.append('customer_email', clientEmail);
       return p;

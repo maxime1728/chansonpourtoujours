@@ -138,7 +138,7 @@ exports.handler = async (event) => {
       const html = `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.7;max-width:560px;">` +
         `<p style="font-size:18px;color:#5C2D4A;">Votre nouvelle version est prête.</p>` +
         `<p>On a appliqué votre demande de modification. Écoutez et téléchargez la version mise à jour sur votre page :</p>` +
-        `<p style="margin:22px 0;"><a href="${SITE}/page-memoire?id=${encodeURIComponent(p.token)}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Écouter ma nouvelle version</a></p>` +
+        `<p style="margin:22px 0;"><a href="${SITE}/page-chanson?id=${encodeURIComponent(p.token)}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Écouter ma nouvelle version</a></p>` +
         `<p style="color:#7A6070;">— L'équipe Chanson Pour Toujours</p></div>`;
       await envoyerCourriel(to, 'Votre nouvelle version est prête', html);
     } catch (_) { /* le courriel ne bloque pas la livraison */ }

@@ -119,7 +119,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         versions:          versions,
         commercial_status: projet.fields.commercial_status || 'preview_only',
-        song_type:         projet.fields.song_type || 'hommage'   // hommage|cadeau -> adapte le copy de l'aperçu (non-PII)
+        song_type:         projet.fields.song_type || 'cadeau'   // hommage|cadeau -> adapte le copy de l'aperçu (non-PII)
         // PAS d'email, PAS de stripe_*, PAS d'attribution. Volontaire (§6).
       })
     };

@@ -24,7 +24,7 @@ const MAX_PROJETS = 3;
 const MAX_TEXTE   = 90000;
 const TIMEOUT_MS  = 20000;
 
-const SYSTEM = `Tu es l'assistant du SERVICE CLIENT de Chanson Pour Toujours (chansons hommage et cadeau personnalisées, marché québécois francophone).
+const SYSTEM = `Tu es l'assistant du SERVICE CLIENT de Chanson Pour Toujours (chansons cadeau personnalisées, marché québécois francophone).
 
 Ta tâche : à partir de l'échange reçu d'un client et du contexte de ses projets, rédiger un BROUILLON de réponse que l'équipe relira avant envoi.
 
@@ -73,11 +73,11 @@ async function construireContexts(projectIds, headers) {
         const p = (await rP.json()).fields || {};
         contexts.push({
           prenom_personne: p.recipient_name || '',
-          type: p.song_type || 'hommage',
+          type: p.song_type || 'cadeau',
           langue: p.language || 'fr-CA',
           statut_commande: p.commercial_status || 'preview_only',
           etape: p.approval_status || '',
-          lien_page: p.token ? `${SITE}/page-memoire?id=${encodeURIComponent(p.token)}` : ''
+          lien_page: p.token ? `${SITE}/page-chanson?id=${encodeURIComponent(p.token)}` : ''
         });
       }
     } catch (_) {}

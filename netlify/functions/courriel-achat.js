@@ -96,7 +96,7 @@ exports.handler = async (event) => {
       ? [valide(stripeEmail) ? stripeEmail : clientEmail].filter(valide)
       : [...new Set([clientEmail, stripeEmail].filter(valide))];   // achat -> les deux, dédupliqués
 
-    const lien = `${SITE}/page-memoire?id=${encodeURIComponent(token)}`;
+    const lien = `${SITE}/page-chanson?id=${encodeURIComponent(token)}`;
 
     let subject, html;
     if (kind === 'upsell') {
