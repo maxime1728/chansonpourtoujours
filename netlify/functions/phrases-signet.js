@@ -1,5 +1,5 @@
 // netlify/functions/phrases-signet.js
-// Propose 3 à 5 courtes phrases pour le SIGNET de commémoration, à partir des DÉTAILS du projet.
+// Propose 3 à 5 courtes phrases pour le SIGNET de souvenir, à partir des DÉTAILS du projet.
 // Lecture seule (Project) + 1 appel Anthropic. Voix de marque : SOLUTION-FIRST, digne, jamais
 // ouvrir sur le deuil/la perte, jamais inventer. Gaté `purchased`. Secrets en env.
 

@@ -42,7 +42,7 @@ exports.handler = async (event) => {
     form.append('from', MG_FROM);
     form.append('to', to);
     form.append('subject', 'Test Chanson Pour Toujours — Mailgun OK');
-    form.append('html', '<p style="font-family:Georgia,serif;color:#2E1A28;">Si vous lisez ceci, la configuration Mailgun (transactionnel) fonctionne. ✅</p>');
+    form.append('html', '<p style="font-family:Georgia,serif;color:#2B1622;">Si vous lisez ceci, la configuration Mailgun (transactionnel) fonctionne. ✅</p>');
 
     const auth = 'Basic ' + Buffer.from('api:' + MG_KEY).toString('base64');
     const r = await fetch(`https://api.mailgun.net/v3/${MG_DOMAIN}/messages`, { method: 'POST', headers: { Authorization: auth }, body: form });

@@ -48,8 +48,8 @@ function genererPdf({ titre, paroles, prenom }) {
     // Fond papier + pied de page sur CHAQUE page (la pagination des paroles longues est automatique).
     doc.on('pageAdded', () => {
       doc.save();
-      doc.rect(0, 0, W, H).fill('#F5F0EA');
-      doc.fillColor('#9A8A96').font('Times-Roman').fontSize(10)
+      doc.rect(0, 0, W, H).fill('#FBF3E9');
+      doc.fillColor('#9A8694').font('Times-Roman').fontSize(10)
         .text('Chanson Pour Toujours', 0, H - 52, { align: 'center', width: W });
       doc.restore();
       doc.x = doc.page.margins.left;
@@ -58,12 +58,12 @@ function genererPdf({ titre, paroles, prenom }) {
 
     doc.addPage();
 
-    doc.fillColor('#5C2D4A').font('Times-Italic').fontSize(27)
+    doc.fillColor('#5A1A3C').font('Times-Italic').fontSize(27)
       .text(titre || 'Pour toujours', { align: 'center' });
     doc.moveDown(0.5);
 
     if (prenom) {
-      doc.fillColor('#7A6070').font('Times-Roman').fontSize(11)
+      doc.fillColor('#7A5C6A').font('Times-Roman').fontSize(11)
         .text('en mémoire de ' + prenom, { align: 'center', characterSpacing: 1.2 });
       doc.moveDown(0.8);
     }
@@ -72,7 +72,7 @@ function genererPdf({ titre, paroles, prenom }) {
     doc.moveTo(cx - 26, y).lineTo(cx + 26, y).lineWidth(1).strokeColor('#C4963A').stroke();
     doc.moveDown(1.2);
 
-    doc.fillColor('#2E1A28').font('Times-Roman').fontSize(13)
+    doc.fillColor('#2B1622').font('Times-Roman').fontSize(13)
       .text(paroles || '', { align: 'center', lineGap: 6 });
 
     doc.end();
@@ -117,11 +117,11 @@ async function envoyerCourriel(to, titre, paroles, pdfBuffer) {
   if (!MG_KEY || !MG_DOMAIN || !to || !to.includes('@')) return false;
   const parolesHtml = String(paroles || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>');
   const html =
-    `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.7;max-width:560px;">` +
+    `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.7;max-width:560px;">` +
     `<p>Voici les paroles de <strong>${titre || 'votre chanson'}</strong> — en pièce jointe, une belle feuille en PDF à imprimer ou à garder.</p>` +
-    `<hr style="border:none;border-top:1px solid #E5DAE0;margin:18px 0;">` +
+    `<hr style="border:none;border-top:1px solid #ECD9C8;margin:18px 0;">` +
     `<div style="white-space:normal;color:#3a2a34;">${parolesHtml}</div>` +
-    `<p style="margin-top:22px;color:#7A6070;">Elle vous appartient — gardez-la précieusement.<br>— L'équipe Chanson Pour Toujours</p></div>`;
+    `<p style="margin-top:22px;color:#7A5C6A;">Elle vous appartient — gardez-la précieusement.<br>— L'équipe Chanson Pour Toujours</p></div>`;
 
   const form = new FormData();
   form.append('from', MG_FROM);

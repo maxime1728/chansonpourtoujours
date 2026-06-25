@@ -1,6 +1,6 @@
 // netlify/functions/lancer-signet.js
 //
-// Génère le SIGNET de commémoration (cadeau) : un marque-page imprimable 2"×7" avec le prénom,
+// Génère le SIGNET de souvenir (cadeau) : un marque-page imprimable 2"×7" avec le prénom,
 // une phrase choisie (signet_text) et un QR code vers la page de la chanson.
 // pdfkit + qrcode (gratuit) -> Cloudinary signé -> écrit signet_url sur le Project.
 // Compagnon de lancer-cadeau.js (PDF des paroles). Le Canva a été abandonné (Enterprise, trop cher).
@@ -39,31 +39,31 @@ function genererSignetPdf({ prenom, phrase, qrBuffer }) {
     doc.on('end', () => resolve(Buffer.concat(chunks)));
     doc.on('error', reject);
 
-    doc.rect(0, 0, W, H).fill('#F5F0EA');
+    doc.rect(0, 0, W, H).fill('#FBF3E9');
 
-    doc.fillColor('#9A8A96').font('Times-Roman').fontSize(8)
+    doc.fillColor('#9A8694').font('Times-Roman').fontSize(8)
       .text('CHANSON MÉMOIRE', 0, 26, { align: 'center', width: W, characterSpacing: 1.5 });
 
-    doc.fillColor('#7A6070').font('Times-Roman').fontSize(9)
+    doc.fillColor('#7A5C6A').font('Times-Roman').fontSize(9)
       .text('en mémoire de', 0, 64, { align: 'center', width: W, characterSpacing: 1 });
-    doc.fillColor('#5C2D4A').font('Times-Italic').fontSize(19)
+    doc.fillColor('#5A1A3C').font('Times-Italic').fontSize(19)
       .text(prenom || 'toujours', 8, 78, { align: 'center', width: W - 16 });
 
     const cx = W / 2, ry = doc.y + 10;
     doc.moveTo(cx - 22, ry).lineTo(cx + 22, ry).lineWidth(1).strokeColor('#C4963A').stroke();
 
     if (phrase) {
-      doc.fillColor('#2E1A28').font('Times-Italic').fontSize(11)
+      doc.fillColor('#2B1622').font('Times-Italic').fontSize(11)
         .text(phrase, 16, ry + 18, { align: 'center', width: W - 32, lineGap: 4 });
     }
 
     // QR vers la page de la chanson, près du bas.
     const qrSize = 96, qx = (W - qrSize) / 2, qy = H - 154;
     doc.image(qrBuffer, qx, qy, { width: qrSize, height: qrSize });
-    doc.fillColor('#7A6070').font('Times-Roman').fontSize(8)
+    doc.fillColor('#7A5C6A').font('Times-Roman').fontSize(8)
       .text('Scanne pour écouter sa chanson', 8, qy + qrSize + 8, { align: 'center', width: W - 16 });
 
-    doc.fillColor('#9A8A96').font('Times-Roman').fontSize(7)
+    doc.fillColor('#9A8694').font('Times-Roman').fontSize(7)
       .text('chansonpourtoujours.ca', 0, H - 28, { align: 'center', width: W });
 
     doc.end();

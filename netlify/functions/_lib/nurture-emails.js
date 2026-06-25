@@ -20,15 +20,15 @@ function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&
 
 // Gabarit commun : papier crème, bouton mauve vers l'aperçu, pied LCAP (désabonnement + adresse).
 function layout({ titre, corps, lien, cta, unsub, postal }) {
-  return `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.7;max-width:560px;margin:auto;">` +
-    `<p style="font-size:18px;color:#5C2D4A;margin:0 0 14px;">${titre}</p>` +
+  return `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.7;max-width:560px;margin:auto;">` +
+    `<p style="font-size:18px;color:#5A1A3C;margin:0 0 14px;">${titre}</p>` +
     `<p style="margin:0 0 22px;">${corps}</p>` +
-    `<p style="margin:0 0 28px;"><a href="${lien}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">${cta}</a></p>` +
-    `<hr style="border:none;border-top:1px solid #E5DAE0;margin:22px 0 12px;">` +
-    `<p style="font-size:12px;color:#9A8A96;margin:0;">` +
+    `<p style="margin:0 0 28px;"><a href="${lien}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">${cta}</a></p>` +
+    `<hr style="border:none;border-top:1px solid #ECD9C8;margin:22px 0 12px;">` +
+    `<p style="font-size:12px;color:#9A8694;margin:0;">` +
     `Vous recevez ce message parce que vous avez créé une chanson sur chansonpourtoujours.ca.<br>` +
     `Chanson Pour Toujours${postal ? ' — ' + esc(postal) : ''}<br>` +
-    `<a href="${unsub}" style="color:#9A8A96;">Se désabonner</a></p></div>`;
+    `<a href="${unsub}" style="color:#9A8694;">Se désabonner</a></p></div>`;
 }
 
 // Retourne { subject, html } du courriel n (1..5). ctx = { prenom, lien, unsub, postal }.

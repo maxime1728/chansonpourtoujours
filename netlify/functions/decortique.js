@@ -184,26 +184,26 @@ ${demande}`;
     try {
       if (TEAM_EMAIL) {
         const teamHtml =
-          `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.6;max-width:620px;">` +
-          `<h2 style="color:#5C2D4A;margin:0 0 4px;">Demande de modification à approuver</h2>` +
-          `<p style="color:#7A6070;margin:0 0 16px;">Réf. ${esc(refId)} · ${esc(categories)} · mode ${esc(mode)}</p>` +
+          `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.6;max-width:620px;">` +
+          `<h2 style="color:#5A1A3C;margin:0 0 4px;">Demande de modification à approuver</h2>` +
+          `<p style="color:#7A5C6A;margin:0 0 16px;">Réf. ${esc(refId)} · ${esc(categories)} · mode ${esc(mode)}</p>` +
           `<p><strong>Personne honorée :</strong> ${esc(p.recipient_name || '')}<br>` +
           `<strong>Titre actuel :</strong> ${esc(gen.song_title || '')}</p>` +
           `<p><strong>Demande du client :</strong><br>${esc(demande)}</p>` +
           `<p><strong>Analyse :</strong><br>${esc(compteRendu)}</p>` +
           (adjLyrics ? `<p><strong>Paroles ajustées proposées :</strong><br>${esc(adjLyrics)}</p>` : '') +
           (adjStyle ? `<p><strong>Prompt style ajusté :</strong><br>${esc(adjStyle)}</p>` : '') +
-          `<p style="margin:20px 0;"><a href="${SITE}/page-chanson?id=${encodeURIComponent(token)}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:11px 20px;border-radius:8px;display:inline-block;">Voir la page du client</a></p>` +
-          `<p style="color:#7A6070;margin-top:18px;">Pour approuver : passez <code>approval_status</code> à « approved » dans Airtable (projet « ${esc(p.project || '')} »).</p></div>`;
+          `<p style="margin:20px 0;"><a href="${SITE}/page-chanson?id=${encodeURIComponent(token)}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:11px 20px;border-radius:8px;display:inline-block;">Voir la page du client</a></p>` +
+          `<p style="color:#7A5C6A;margin-top:18px;">Pour approuver : passez <code>approval_status</code> à « approved » dans Airtable (projet « ${esc(p.project || '')} »).</p></div>`;
         await envoyerCourriel(TEAM_EMAIL, `À approuver — ${refId} (${categories})`, teamHtml);
       }
       const to = await emailClient(projet, headers);
       const clientHtml =
-        `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.7;max-width:560px;">` +
+        `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.7;max-width:560px;">` +
         `<p>Votre demande de modification est bien reçue.</p>` +
         `<p>Notre équipe prépare votre nouvelle version avec soin et vous revient très bientôt. Vous n'avez rien à faire d'ici là.</p>` +
-        `<p style="margin:22px 0;"><a href="${SITE}/page-chanson?id=${encodeURIComponent(token)}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Revoir ma page</a></p>` +
-        `<p style="color:#7A6070;margin-top:18px;">— L'équipe Chanson Pour Toujours</p></div>`;
+        `<p style="margin:22px 0;"><a href="${SITE}/page-chanson?id=${encodeURIComponent(token)}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Revoir ma page</a></p>` +
+        `<p style="color:#7A5C6A;margin-top:18px;">— L'équipe Chanson Pour Toujours</p></div>`;
       await envoyerCourriel(to, 'Votre demande de modification est bien reçue', clientHtml);
     } catch (_) { /* les courriels ne bloquent jamais l'enregistrement */ }
 

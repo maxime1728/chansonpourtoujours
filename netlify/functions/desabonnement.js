@@ -23,9 +23,9 @@ const PAGE = (msg) =>
   `<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">` +
   `<meta name="viewport" content="width=device-width, initial-scale=1">` +
   `<title>Désabonnement — Chanson Pour Toujours</title></head>` +
-  `<body style="font-family:Georgia,serif;background:#F5F0EA;color:#2E1A28;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;">` +
+  `<body style="font-family:Georgia,serif;background:#FBF3E9;color:#2B1622;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;">` +
   `<div style="max-width:420px;text-align:center;padding:24px;">` +
-  `<div style="font-size:22px;color:#5C2D4A;margin-bottom:10px;">Chanson<span style="color:#C4963A;">Mémoire</span></div>` +
+  `<div style="font-size:22px;color:#5A1A3C;margin-bottom:10px;">Chanson<span style="color:#C4963A;">Mémoire</span></div>` +
   `<p style="line-height:1.7;">${msg}</p></div></body></html>`;
 
 async function unsubscribe(token) {

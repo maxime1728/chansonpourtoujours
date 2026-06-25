@@ -56,11 +56,11 @@ async function emailClient(projet, headers) {
 
 // Gabarit HTML commun (papier crème, titre serif mauve, bouton doré vers la page de livraison).
 function gabarit({ intro, corps, lien }) {
-  return `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.7;max-width:560px;margin:auto;">` +
-    `<p style="font-size:18px;color:#5C2D4A;margin:0 0 14px;">${intro}</p>` +
+  return `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.7;max-width:560px;margin:auto;">` +
+    `<p style="font-size:18px;color:#5A1A3C;margin:0 0 14px;">${intro}</p>` +
     `<p style="margin:0 0 22px;">${corps}</p>` +
-    `<p style="margin:0 0 26px;"><a href="${lien}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Accéder à ma page</a></p>` +
-    `<p style="color:#7A6070;margin:0;">— L'équipe Chanson Pour Toujours</p></div>`;
+    `<p style="margin:0 0 26px;"><a href="${lien}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">Accéder à ma page</a></p>` +
+    `<p style="color:#7A5C6A;margin:0;">— L'équipe Chanson Pour Toujours</p></div>`;
 }
 
 exports.handler = async (event) => {
