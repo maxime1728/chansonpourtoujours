@@ -144,18 +144,18 @@ ${(lyrics || '').slice(0, 2500)}`;
       const to = await emailClient(projet, headers);
       if (TEAM_EMAIL) {
         const html =
-          `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.6;max-width:620px;">` +
-          `<h2 style="color:#5C2D4A;margin:0 0 4px;">Erreur de prononciation signalée</h2>` +
-          `<p style="color:#7A6070;margin:0 0 16px;">Personne honorée : ${esc(p.recipient_name || '')}</p>` +
+          `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.6;max-width:620px;">` +
+          `<h2 style="color:#5A1A3C;margin:0 0 4px;">Erreur de prononciation signalée</h2>` +
+          `<p style="color:#7A5C6A;margin:0 0 16px;">Personne honorée : ${esc(p.recipient_name || '')}</p>` +
           `<p><strong>Mot à corriger :</strong> ${esc(mot || '(aucun — voir « Autre chose »)')}</p>` +
           `<p><strong>Ce que le client a écrit :</strong><br>${esc(indication || '(rien de plus)')}</p>` +
           `<p><strong>Autre chose à ajouter (paroles, etc.) :</strong><br>${esc(autre || '(rien)')}</p>` +
           `<p><strong>Prononciation proposée (à mettre dans les paroles) :</strong><br>` +
-          `<span style="font-size:18px;color:#5C2D4A;"><strong>${esc(phonetique || '— (analyse IA indisponible)')}</strong></span></p>` +
+          `<span style="font-size:18px;color:#5A1A3C;"><strong>${esc(phonetique || '— (analyse IA indisponible)')}</strong></span></p>` +
           `<p><strong>Analyse :</strong><br>${esc(explication || '—')}</p>` +
           `<p><strong>Courriel du client :</strong> ${esc(to || '(introuvable)')}</p>` +
-          `<p style="margin:20px 0;"><a href="${SITE}/apercu?id=${encodeURIComponent(token)}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:11px 20px;border-radius:8px;display:inline-block;">Ouvrir l'aperçu</a></p>` +
-          `<p style="color:#7A6070;margin-top:18px;">Régénère la chanson avec la prononciation corrigée, puis renvoie le lien au client.</p></div>`;
+          `<p style="margin:20px 0;"><a href="${SITE}/apercu?id=${encodeURIComponent(token)}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:11px 20px;border-radius:8px;display:inline-block;">Ouvrir l'aperçu</a></p>` +
+          `<p style="color:#7A5C6A;margin-top:18px;">Régénère la chanson avec la prononciation corrigée, puis renvoie le lien au client.</p></div>`;
         const sujet = mot
           ? `Prononciation à corriger — « ${mot} » (${(p.recipient_name || '').slice(0, 40)})`
           : `Correction demandée (paroles) — ${(p.recipient_name || '').slice(0, 40)}`;

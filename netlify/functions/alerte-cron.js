@@ -41,7 +41,7 @@ exports.handler = async () => {
 
     for (const rec of recs) {
       const g = rec.fields;
-      const html = `<div style="font-family:Georgia,serif;color:#2E1A28;line-height:1.6;">` +
+      const html = `<div style="font-family:Georgia,serif;color:#2B1622;line-height:1.6;">` +
         `<p>Une chanson est restée bloquée plus de 10 h (audio absent malgré les relances de la sentinelle).</p>` +
         `<p><strong>Génération :</strong> ${esc(rec.id)}<br><strong>Titre :</strong> ${esc(g.song_title || '')}<br>` +
         `<strong>Créée :</strong> ${esc(g.created_date || '')}<br><strong>Task Suno :</strong> ${esc(g.suno_task_id || '')}</p>` +

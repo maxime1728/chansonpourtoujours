@@ -36,10 +36,10 @@ function esc(s) {
 // (le texte la contient déjà) — juste un pied discret en lettrage.
 function corpsHtml(texte) {
   const t = esc(texte).replace(/\r?\n/g, '<br>');
-  return `<div style="font-family:Georgia,'Times New Roman',serif;color:#2E1A28;line-height:1.7;font-size:16px;max-width:560px;">` +
+  return `<div style="font-family:Georgia,'Times New Roman',serif;color:#2B1622;line-height:1.7;font-size:16px;max-width:560px;">` +
     `<div>${t}</div>` +
-    `<hr style="border:none;border-top:1px solid #E5DAE0;margin:24px 0 12px;">` +
-    `<div style="color:#9A8A96;font-size:12px;letter-spacing:.3px;">Chanson Pour Toujours · chansonpourtoujours.ca</div>` +
+    `<hr style="border:none;border-top:1px solid #ECD9C8;margin:24px 0 12px;">` +
+    `<div style="color:#9A8694;font-size:12px;letter-spacing:.3px;">Chanson Pour Toujours · chansonpourtoujours.ca</div>` +
     `</div>`;
 }
 

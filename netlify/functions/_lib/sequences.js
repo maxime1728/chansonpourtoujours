@@ -16,19 +16,19 @@ const SITE = 'https://chansonpourtoujours.ca';
 function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
 function btn(href, label) {
-  return `<p style="margin:22px 0;"><a href="${href}" style="background:#5C2D4A;color:#F5F0EA;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">${label}</a></p>`;
+  return `<p style="margin:22px 0;"><a href="${href}" style="background:#5A1A3C;color:#FBF3E9;text-decoration:none;padding:12px 22px;border-radius:8px;display:inline-block;">${label}</a></p>`;
 }
 
 // Enveloppe de marque + pied LCAP (désabonnement + adresse postale).
 function shell(inner, ctx) {
-  return `<div style="font-family:Georgia,'Times New Roman',serif;color:#2E1A28;line-height:1.7;font-size:16px;max-width:560px;">`
+  return `<div style="font-family:Georgia,'Times New Roman',serif;color:#2B1622;line-height:1.7;font-size:16px;max-width:560px;">`
     + inner
-    + `<p style="color:#7A6070;margin-top:22px;">L'équipe Chanson Pour Toujours</p>`
-    + `<hr style="border:none;border-top:1px solid #E5DAE0;margin:22px 0 10px;">`
-    + `<div style="color:#9A8A96;font-size:12px;line-height:1.5;">`
+    + `<p style="color:#7A5C6A;margin-top:22px;">L'équipe Chanson Pour Toujours</p>`
+    + `<hr style="border:none;border-top:1px solid #ECD9C8;margin:22px 0 10px;">`
+    + `<div style="color:#9A8694;font-size:12px;line-height:1.5;">`
     + (ctx.postal ? esc(ctx.postal) + '<br>' : '')
     + `Vous recevez ce courriel parce que vous avez créé une chanson avec nous. `
-    + `<a href="${ctx.unsub}" style="color:#9A8A96;">Se désabonner</a>.`
+    + `<a href="${ctx.unsub}" style="color:#9A8694;">Se désabonner</a>.`
     + `</div></div>`;
 }
 
@@ -84,7 +84,7 @@ const PARRAINAGE = {
       subject: 'Connaissez-vous quelqu\'un que ça toucherait ?',
       html: (c) => shell(
         `<p>Bonjour,</p>`
-        + `<p>Si votre chanson vous a touché, elle parlera peut-être aussi à quelqu'un de votre entourage. Faites découvrir Chanson Pour Toujours à un proche qui aimerait garder une voix, un souvenir, bien vivant.</p>`
+        + `<p>Si votre chanson vous a touché, elle parlera peut-être aussi à quelqu'un de votre entourage. Faites découvrir Chanson Pour Toujours à un proche qui aimerait faire plaisir à une personne qui compte.</p>`
         + btn(`${SITE}/api/clic?c=parrainage&t=${encodeURIComponent(c.token)}&u=${encodeURIComponent(SITE)}`, 'Faire découvrir Chanson Pour Toujours')
         + `<p>Merci de faire connaître ces moments autour de vous.</p>`, c)
     }
@@ -97,7 +97,7 @@ const PARRAINAGE = {
 // le formulaire. Le saisonnier (fêtes) = mécanisme séparé (envoi daté à un segment), à venir.
 const CROSS_SELL = {
   id: 'cross_sell',
-  label: 'Cross-sell (hommage <-> cadeau)',
+  label: 'Cross-sell (autre occasion)',
   enrollFormula: `AND({commercial_status}='purchased', {nurture_status}!='unsubscribed', IS_AFTER({created_date}, DATEADD(NOW(),-504,'hours')))`,
   exit: (f) => (f.commercial_status || '') === 'refunded',
   emails: [
@@ -133,7 +133,7 @@ const NOEL_2026 = {
       subject: 'Un cadeau de Noël qui reste, longtemps après les fêtes',
       html: (c) => shell(
         `<p>Bonjour,</p>`
-        + `<p>Le temps des fêtes approche. Cette année, offrez quelque chose qui dure : une chanson personnalisée, pour honorer une personne qui vous manque, ou pour faire plaisir à quelqu'un que vous aimez.</p>`
+        + `<p>Le temps des fêtes approche. Cette année, offrez quelque chose qui dure : une chanson personnalisée, pour faire plaisir à quelqu'un que vous aimez.</p>`
         + `<p>Pensez à la créer tôt, pour l'avoir bien à temps sous le sapin.</p>`
         + btn(`${SITE}/api/clic?c=noel_2026&t=${encodeURIComponent(c.token)}&u=${encodeURIComponent(SITE + '/souvenirs')}`, 'Créer une chanson pour les fêtes')
         + `<p>Joyeuses fêtes,</p>`, c)

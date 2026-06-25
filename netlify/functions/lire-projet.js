@@ -135,7 +135,7 @@ exports.handler = async (event) => {
         ambiance:          gen.gen_mood        || projet.fields.mood        || '',
         cadeaux_requested: !!projet.fields.pdf_template,            // a déjà choisi ses modèles -> état 'en préparation' tant que les URLs sont absentes
         pdf_url:           toHttps(projet.fields.pdf_url || ''),    // PDF paroles (Canva) — propriété du client, token-gaté ; posé par Make au fulfillment
-        signet_url:        toHttps(projet.fields.signet_url || ''), // signet commémoration (Canva)
+        signet_url:        toHttps(projet.fields.signet_url || ''), // signet souvenir (Canva)
         instrumental_url:  toHttps(projet.fields.instrumental_url || ''), // add-on instrumentale livrée (Suno vocal-removal) — propriété du client, token-gaté
         video_url:         toHttps(projet.fields.video_url || '')         // add-on paroles vivantes livrée (vidéo Shotstack) — propriété du client, token-gaté
         // PAS d'email, PAS de stripe_*, PAS d'attribution. Volontaire.

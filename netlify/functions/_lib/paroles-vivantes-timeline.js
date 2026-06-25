@@ -15,8 +15,8 @@
 'use strict';
 
 // ── Palette ─────────────────────────────────────────────────────────────────
-const BG    = '#241019';   // plum profond (famille du #2E1A28 du PDF)
-const CREAM = '#F5F0EA';   // crème — corps des paroles
+const BG    = '#241019';   // plum profond (famille du #2B1622 du PDF)
+const CREAM = '#FBF3E9';   // crème — corps des paroles
 const GOLD  = '#C4963A';   // doré — accent « en mémoire de »
 const MAUVE = '#E7C9D8';   // mauve clair, lisible sur fond sombre — titre
 
