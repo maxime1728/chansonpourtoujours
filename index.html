@@ -1284,6 +1284,12 @@ function tSeekTouch(el,e){
   window.addEventListener('scroll',toggle,{passive:true});
 })();
 
+/* ═══ ANTI-TRACKING équipe/tests (parité serveur _lib/courriels-internes.js) ═══
+   Coupe pixel + events pour nos courriels. ?cm_no_track=1 = silence total sur cet appareil ; =0 réactive. */
+(function(){ try{ var q=new URLSearchParams(location.search); if(q.has('cm_no_track')){ q.get('cm_no_track')!=='0' ? localStorage.setItem('cpt_no_track','1') : localStorage.removeItem('cpt_no_track'); } }catch(e){} })();
+window.cptNoTrack = window.cptNoTrack || function(){ try{ return localStorage.getItem('cpt_no_track')==='1'; }catch(e){ return false; } };
+window.cptSetNoTrack = window.cptSetNoTrack || function(email){ try{ if(email && ['maximeblanchet.mb@gmail.com','maxime@labmarketing.ca','roxannetrudel.rt@gmail.com'].indexOf(String(email).trim().toLowerCase())!==-1) localStorage.setItem('cpt_no_track','1'); }catch(e){} };
+
 /* ═══ CONSENT ═══ */
 (function(){
   var c=localStorage.getItem('cpt_consent');
@@ -1302,6 +1308,7 @@ function reopenConsent(){
   if(document.getElementById('sticky').classList.contains('show'))b.classList.add('docked');
 }
 function loadPixel(){
+  if(window.cptNoTrack&&window.cptNoTrack())return;   // équipe/tests -> aucun pixel/PageView
   if(window._px)return;window._px=true;
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   var _PX='TON_PIXEL_ID_CPT';if(_PX.indexOf('TON_PIXEL')!==0){fbq('init',_PX);fbq('track','PageView');}
