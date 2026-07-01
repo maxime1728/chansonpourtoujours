@@ -32,8 +32,14 @@
 /* ── SUIVI FUNNEL (best-effort, ne casse jamais l'UX) ──
    Envoie un événement de parcours à /api/suivi-funnel. sendBeacon survit à la navigation
    (utile pour checkout_started juste avant la redirection Stripe). */
+/* Anti-tracking équipe/tests (parité serveur _lib/courriels-internes.js) : ?cm_no_track=1 = silence total. */
+(function(){ try{ var q=new URLSearchParams(location.search); if(q.has('cm_no_track')){ q.get('cm_no_track')!=='0' ? localStorage.setItem('cpt_no_track','1') : localStorage.removeItem('cpt_no_track'); } }catch(e){} })();
+window.cptNoTrack = window.cptNoTrack || function(){ try{ return localStorage.getItem('cpt_no_track')==='1'; }catch(e){ return false; } };
+window.cptSetNoTrack = window.cptSetNoTrack || function(email){ try{ if(email && ['maximeblanchet.mb@gmail.com','maxime@labmarketing.ca','roxannetrudel.rt@gmail.com'].indexOf(String(email).trim().toLowerCase())!==-1) localStorage.setItem('cpt_no_track','1'); }catch(e){} };
+
 /* Pixel Meta (consentement requis) — eventID = sha256(token.evt) pour dédup avec le CAPI serveur. */
 window._cmPixel = function(eventName, evtKey, tok, custom){
+  if(window.cptNoTrack&&window.cptNoTrack()) return;   // équipe/tests -> aucun event pixel
   try{ if(localStorage.getItem('cpt_consent')!=='yes' || !tok) return; }catch(e){ return; }
   (function ld(){ if(window._px)return; window._px=true; !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');var _PX='TON_PIXEL_ID_CPT';if(_PX.indexOf('TON_PIXEL')!==0){fbq('init',_PX);fbq('track','PageView');} })();
   crypto.subtle.digest('SHA-256', new TextEncoder().encode((tok+'.'+evtKey).trim().toLowerCase())).then(function(buf){ var id=Array.prototype.map.call(new Uint8Array(buf),function(x){return x.toString(16).padStart(2,'0');}).join(''); var o=id?{eventID:id}:{}; try{ if(eventName==='PreviewPlayed'){fbq('trackCustom',eventName,custom||{},o);}else{fbq('track',eventName,custom||{},o);} }catch(e){} }).catch(function(){ try{ if(eventName==='PreviewPlayed'){fbq('trackCustom',eventName,custom||{});}else{fbq('track',eventName,custom||{});} }catch(e){} });
@@ -41,6 +47,7 @@ window._cmPixel = function(eventName, evtKey, tok, custom){
 
 window._cmFunnel = function(evt) {
   try {
+    if(window.cptNoTrack&&window.cptNoTrack()) return;   // équipe/tests -> ni suivi-funnel ni pixel
     var t = (window._CM && window._CM.id) || '';
     if (!t) return;                                  /* pas de token => aperçu legacy, on ne track pas */
     var payload = JSON.stringify({ token: t, event: evt });

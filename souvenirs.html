@@ -335,11 +335,16 @@ a{color:inherit;}
   function getParam(n){ return new URLSearchParams(window.location.search).get(n) || ''; }
   function getCookie(n){ var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m?m.pop():''; }
 
+  /* ── Anti-tracking équipe/tests (parité serveur _lib/courriels-internes.js) : ?cm_no_track=1 = silence total. ── */
+  (function(){ try{ var q=new URLSearchParams(location.search); if(q.has('cm_no_track')){ q.get('cm_no_track')!=='0' ? localStorage.setItem('cpt_no_track','1') : localStorage.removeItem('cpt_no_track'); } }catch(e){} })();
+  window.cptNoTrack = window.cptNoTrack || function(){ try{ return localStorage.getItem('cpt_no_track')==='1'; }catch(e){ return false; } };
+  window.cptSetNoTrack = window.cptSetNoTrack || function(email){ try{ if(email && ['maximeblanchet.mb@gmail.com','maxime@labmarketing.ca','roxannetrudel.rt@gmail.com'].indexOf(String(email).trim().toLowerCase())!==-1) localStorage.setItem('cpt_no_track','1'); }catch(e){} };
+
   /* ── Pixel Meta (consentement requis) ── */
   function cptConsentOK(){ try{ return localStorage.getItem('cpt_consent')==='yes'; }catch(e){ return false; } }
-  function cptLoadPixel(){ if(window._px||PIXEL_ID_CPT==='TON_PIXEL_ID_CPT')return; window._px=true; !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',PIXEL_ID_CPT);fbq('track','PageView'); }
+  function cptLoadPixel(){ if((window.cptNoTrack&&window.cptNoTrack())||window._px||PIXEL_ID_CPT==='TON_PIXEL_ID_CPT')return; window._px=true; !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',PIXEL_ID_CPT);fbq('track','PageView'); }
   async function cptEid(s){ try{ var bb=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(s).trim().toLowerCase())); return Array.prototype.map.call(new Uint8Array(bb), function(x){return x.toString(16).padStart(2,'0');}).join(''); }catch(e){ return ''; } }
-  async function cptPixel(eventName, evtKey, tok){ if(!cptConsentOK()||!tok)return; cptLoadPixel(); if(!window.fbq)return; var o={}; var id=await cptEid(tok+'.'+evtKey); if(id)o.eventID=id; try{ fbq('track',eventName,{},o); }catch(e){} }
+  async function cptPixel(eventName, evtKey, tok){ if((window.cptNoTrack&&window.cptNoTrack())||!cptConsentOK()||!tok)return; cptLoadPixel(); if(!window.fbq)return; var o={}; var id=await cptEid(tok+'.'+evtKey); if(id)o.eventID=id; try{ fbq('track',eventName,{},o); }catch(e){} }
   if(cptConsentOK()) cptLoadPixel();
 
   /* ── ÉTAT : noms = champs Airtable CPT ── */
@@ -492,6 +497,7 @@ a{color:inherit;}
     if(!valid) return;
 
     data.email=email; data.consentement=true;
+    if(window.cptSetNoTrack) window.cptSetNoTrack(email);   // courriel équipe/tests -> coupe le tracking sur cet appareil
     var langSel=document.getElementById('input-language'); data.language=(langSel&&langSel.value)||'fr-CA';
 
     var btn=document.getElementById('btn-submit');
